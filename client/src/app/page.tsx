@@ -1,4 +1,6 @@
 import { Button } from "@mui/material";
+import Header from "@/components/Header";
+
 export default function Home() {
-  return <Button variant="contained">Hello World</Button>;
+  return <Header />;
 }

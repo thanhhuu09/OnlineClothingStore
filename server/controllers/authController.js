@@ -29,7 +29,26 @@ const authController = {
   },
   // Login an existing user
   login: async (req, res) => {
-    res.json("Login");
+    try {
+      const user = await User.findOne({ email: req.body.email });
+      // Check if user not found
+      if (!user) {
+        res.status(400).json({ message: "User not found" });
+      } else {
+        // Check if password is correct
+        const passwordMatch = await bcrypt.compare(
+          req.body.password,
+          user.password
+        );
+        if (!passwordMatch) {
+          res.status(400).json({ message: "Incorrect password" });
+        } else {
+          res.status(200).json(user);
+        }
+      }
+    } catch (error) {
+      res.status(500).json(error);
+    }
   },
 };
 

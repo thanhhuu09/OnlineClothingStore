@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-
+import colors from "tailwindcss/colors";
 const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -8,6 +8,11 @@ const config: Config = {
   ],
   theme: {
     extend: {},
+    colors: {
+      ...colors,
+      primary: colors.slate,
+      secondary: colors.red,
+    },
   },
   plugins: [],
 };

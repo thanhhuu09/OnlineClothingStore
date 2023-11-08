@@ -6,10 +6,10 @@ import Link from "next/link";
 export default function Navbar() {
   return (
     <nav className="bg-white sticky w-full z-20 top-0 left-0 border-b-slate-600">
-      <div className="flex justify-between items-center px-12 py">
+      <div className="flex justify-between items-center px-12 py-2">
         <div style={{ position: "relative", width: "200px", height: "60px" }}>
           <Image
-            src="/logo.png"
+            src="/logo.svg"
             style={{ objectFit: "cover" }}
             alt="logo"
             fill

@@ -21,7 +21,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${roboto.className} max-w-screen-2xl mx-auto `}>
+      <body
+        className={`${roboto.className} max-w-screen-2xl mx-auto box-border`}
+      >
         <Navbar />
         {children}
         <Footer />

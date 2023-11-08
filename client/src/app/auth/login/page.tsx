@@ -9,19 +9,20 @@ export default function page() {
           href="/"
           className="flex items-center mb-6 text-2xl font-semibold text-gray-900"
         >
-          <Image
-            className="mr-2"
-            width={32}
-            height={32}
-            src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
-            alt="logo"
-          />
-          Flowbite
+          <div style={{ width: "200px", height: "60px", position: "relative" }}>
+            <Image
+              className="mr-2"
+              fill
+              src="/logo.svg"
+              alt="logo"
+              objectFit="cover"
+            />
+          </div>
         </Link>
         <div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
-              Đăng nhập vào tài khoản của bạn
+              Chào mừng bạn quay trở lại!👋
             </h1>
             <form action="space-y-4 md:space-y-6" method="post">
               <div>
@@ -56,8 +57,8 @@ export default function page() {
                   required
                 />
               </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-start mb-4">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-start">
                   <div className="flex items-center h-5">
                     <input
                       id="remember"
@@ -69,7 +70,7 @@ export default function page() {
                   </div>
                   <div className="ml-3 text-sm">
                     <label htmlFor="remember" className="text-gray-500">
-                      Remember me
+                      Ghi nhớ tôi
                     </label>
                   </div>
                 </div>
@@ -84,7 +85,7 @@ export default function page() {
                 type="submit"
                 className="w-full mb-4 text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center "
               >
-                Sign in
+                Đăng nhập
               </button>
               <p className="text-sm font-light text-gray-500">
                 Chưa có tài khoản?{" "}

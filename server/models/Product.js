@@ -20,7 +20,7 @@ const productSchema = new mongoose.Schema({
     type: [String],
     required: [true, "Please enter a color"],
   },
-  images: {
+  imagesURL: {
     type: [String],
     required: [true, "Please enter an image"],
     trim: true,
@@ -28,10 +28,14 @@ const productSchema = new mongoose.Schema({
   rating: {
     type: Number,
   },
-  // inventory: {
-  //   type: Number,
-  //   required: [true, "Please enter an inventory"],
-  // },
+  inventory: {
+    type: Number,
+    required: [true, "Please enter an inventory"],
+  },
+  size: {
+    type: [String],
+    required: [true, "Please enter a size"],
+  },
   isFeatured: {
     type: Boolean,
     default: false,
@@ -39,10 +43,6 @@ const productSchema = new mongoose.Schema({
   category: {
     type: String,
     required: [true, "Please enter a category"],
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
   },
 });
 

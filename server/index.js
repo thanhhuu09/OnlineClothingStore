@@ -23,8 +23,8 @@ mongoose.connect(process.env.CONNECTION_STRING).then(() => {
 
 // Routes
 const authRoutes = require("./routes/auth");
-
+const productRoutes = require("./routes/product");
 // Use Routes
 app.use("/api/v1/auth", authRoutes);
-
+app.use("/api/v1/products", productRoutes);
 app.listen(port, () => console.log(`Server is running on port ${port}!`));

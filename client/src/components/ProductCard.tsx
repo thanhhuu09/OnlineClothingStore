@@ -1,85 +1,55 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import { Product } from "@/app/interfaces/productInterface";
+import { Heart, Eye, Star, StarHalf } from "@phosphor-icons/react";
+import { Rating, styled } from "@mui/material";
 
+// Product interface dùng để check kiểu dữ liệu của product nhận từ API
+// ProductCardProps sử dụng để check kiểu dữ liệu của props truyền vào ProductCard
+interface ProductCardProps {
+  product: Product;
+}
 // Product Card Component
-export default function ProductCard() {
+export default function ProductCard({ product }: ProductCardProps) {
   return (
-    <div>
-      <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow">
+    <div className="">
+      {/* Top Section */}
+      <div className="overflow-hidden w-80 h-80 bg-white border border-gray-200 rounded-2xl shadow relative group">
         <Link href="#">
           <Image
-            className="p-8 rounded-t-lg"
-            src="https://flowbite.com/docs/images/products/apple-watch.png"
+            className="p-8 rounded-t-lg group-hover:scale-105 transition-all ease-in-out duration-300 cursor-pointer"
+            src={product.image}
             alt="picture of product"
-            width={500}
-            height={500}
+            fill
+            style={{ objectFit: "contain" }}
           />
         </Link>
-        <div className="px-5 pb-5">
-          <Link href="#">
-            <h2 className="text-xl font-semibold tracking-tight text-gray-900 ">
-              Apple Watch Series 7 GPS, Aluminium Case, Starlight Sport
-            </h2>
-          </Link>
-          <div className="flex items-center mt-2.5 mb-5">
-            <svg
-              className="w-4 h-4 text-yellow-300 mr-1"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 22 20"
-            >
-              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-            </svg>
-            <svg
-              className="w-4 h-4 text-yellow-300 mr-1"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 22 20"
-            >
-              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-            </svg>
-            <svg
-              className="w-4 h-4 text-yellow-300 mr-1"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 22 20"
-            >
-              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-            </svg>
-            <svg
-              className="w-4 h-4 text-yellow-300 mr-1"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 22 20"
-            >
-              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-            </svg>
-            <svg
-              className="w-4 h-4 text-gray-200"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 22 20"
-            >
-              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-            </svg>
-            <span className="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded ml-3">
-              5.0
-            </span>
+        <div className="absolute top-0 -right-11 group-hover:right-0 p-3 opacity-0 group-hover:opacity-100 transition-all duration-300">
+          <div className="bg-slate-200 rounded-full p-2 mb-2 cursor-pointer">
+            <Heart size={26} color="black" />
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-3xl font-bold text-gray-900 ">$599</span>
-            <a
-              href="#"
-              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-            >
-              Add to cart
-            </a>
+          <div className="bg-slate-200 rounded-full p-2 cursor-pointer">
+            <Eye size={26} color="black" />
           </div>
+        </div>
+      </div>
+      {/* Bottom Section */}
+      <div className="mt-4">
+        <p className="text-base font-semibold max-w-[200px] truncate">
+          {product.title}
+        </p>
+        <div className="flex items-center gap-2 mt-2">
+          <p className="text-base font-semibold text-secondary-400">
+            {product.price}
+          </p>
+          <Rating
+            name="product-rating"
+            defaultValue={product.rating.rate}
+            precision={0.5}
+            readOnly
+          />
+          <p className="text-primary-600">({product.rating.count})</p>
         </div>
       </div>
     </div>

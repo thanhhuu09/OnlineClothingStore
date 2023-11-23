@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 
 const roboto = Roboto({
   weight: ["400", "700"],
+  style: ["normal", "italic"],
   subsets: ["latin"],
 });
 

@@ -8,12 +8,14 @@ export default function Navbar() {
     <nav className="bg-white sticky w-full z-20 top-0 left-0 border-b-slate-600">
       <div className="flex justify-between items-center px-12 py-2">
         <div style={{ position: "relative", width: "200px", height: "60px" }}>
-          <Image
-            src="/logo.svg"
-            style={{ objectFit: "cover" }}
-            alt="logo"
-            fill
-          />
+          <Link href="/">
+            <Image
+              src="/logo.svg"
+              style={{ objectFit: "cover" }}
+              alt="logo"
+              fill
+            />
+          </Link>
         </div>
 
         <ul className="flex gap-4 items-center text-primary-600">
@@ -25,7 +27,7 @@ export default function Navbar() {
         </ul>
         <ul className="flex gap-4 items-center">
           <li className="cursor-pointer">
-            <MagnifyingGlass size={24} color="black" />
+            <form className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"></form>
           </li>
           <li className="cursor-pointer">
             <div className="relative">

@@ -27,7 +27,7 @@ export default function Header() {
           src="/images/banner_header.png"
           alt="banner_header"
           fill
-          objectFit="contain"
+          style={{ objectFit: "contain" }}
         />
       </div>
     </div>

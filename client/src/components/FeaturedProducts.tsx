@@ -1,13 +1,12 @@
-import { Product } from "@/app/interfaces/productInterface";
+import { Product } from "@/interfaces/productInterface";
 import ProductCard from "./ProductCard";
+import { getProducts } from "@/api/products";
 // Featured Products Component
-async function getProducts() {
-  const res = await fetch("https://fakestoreapi.com/products?limit=4");
-  return res.json();
-}
+
 export default async function FeaturedProducts() {
   // Fetch data from API
   const products = await getProducts();
+
   return (
     <div>
       <h1 className="text-center text-4xl text-primary-700 font-extrabold p-16">

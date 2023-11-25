@@ -1,9 +1,9 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { Product } from "@/app/interfaces/productInterface";
-import { Heart, Eye, Star, StarHalf } from "@phosphor-icons/react";
-import { Rating, styled } from "@mui/material";
+import { Product } from "@/interfaces/productInterface";
+import { Heart, Eye, Star } from "@phosphor-icons/react";
+import { Rating } from "@mui/material";
 
 // Product interface dùng để check kiểu dữ liệu của product nhận từ API
 // ProductCardProps sử dụng để check kiểu dữ liệu của props truyền vào ProductCard

@@ -4,7 +4,7 @@ const API_URL = "https://fakestoreapi.com/products";
 // Get all products
 const getProducts = async () => {
   try {
-    const res = await fetch(`${API_URL}?limit=8`);
+    const res = await fetch(`${API_URL}`);
     return res.json();
   } catch (error) {
     console.log(error);

@@ -1,13 +1,16 @@
 import { useState } from "react";
 import Slider from "@mui/material/Slider";
-
+interface PriceRangeProps {
+  priceRange: (value: number[]) => void;
+}
 function valuetext(value: number) {
   return `${value}`;
 }
 const minDistance = 10;
 
-export default function PriceRange() {
+export default function PriceRange({ priceRange }: PriceRangeProps) {
   const [value, setValue] = useState<number[]>([20, 37]);
+  priceRange(value);
   const handleChange = (
     event: Event,
     newValue: number | number[],

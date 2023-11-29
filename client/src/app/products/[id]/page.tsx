@@ -1,11 +1,13 @@
 "use client";
 import ColorBox from "@/components/ColorBox";
+import ProductSlider from "@/components/ProductSlider";
 import SizeBox from "@/components/SizeBox";
 import { Rating } from "@mui/material";
 import { Heart, Minus, Plus, Repeat, Truck } from "@phosphor-icons/react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Slider from "react-slick";
 
 export default function Page() {
   const { id } = useParams();
@@ -42,37 +44,7 @@ export default function Page() {
 
   return (
     <div className="flex gap-8 justify-between px-12">
-      {/* Child images for a product */}
-      <div className="flex gap-3 flex-col h-[550px] overflow-y-scroll no-scrollbar">
-        {productImages.map((image, index) => (
-          <div
-            key={index}
-            className="bg-primary-100 w-fit rounded-md px-5 py-2"
-          >
-            <Image
-              width={150}
-              height={150}
-              src={image}
-              alt="product image"
-              onClick={() => setSelectedImage(image)}
-            />
-          </div>
-        ))}
-      </div>
-      {/* Main image for a product */}
-      <div className="w-[700px]">
-        <div className="bg-primary-100 max-w-full rounded-md flex justify-center items-center overflow-hidden">
-          <Image
-            layout="responsive"
-            width={300}
-            height={250}
-            objectFit="contain"
-            src={selectedImage}
-            alt="product image"
-          />
-        </div>
-      </div>
-      {/* Product info */}
+      <ProductSlider images={productImages} />
       <div className="flex flex-col gap-5">
         <h1 className="text-xl font-semibold">Havic HV G-92 Gamepad</h1>
         <div className="flex gap-2 ">

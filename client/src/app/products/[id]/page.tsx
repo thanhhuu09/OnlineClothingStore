@@ -25,7 +25,6 @@ export default function Page() {
   const [selectedSize, setSelectedSize] = useState<string>(productSizes[0]);
   const [selectedColor, setSelectedColor] = useState<string>(productColors[0]);
   const [quantity, setQuality] = useState<number>(1);
-  const [selectedImage, setSelectedImage] = useState<string>(productImages[0]);
   // Handle data from child component when is clicked
   const handleSizeChange = (size: string) => {
     setSelectedSize(size);

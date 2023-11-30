@@ -1,10 +1,11 @@
 import Slider from "react-slick";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ImageModal from "./ImageModal";
 
 export default function ProductSlider({ images }: { images: string[] }) {
   const [activeSlide, setActiveSlide] = useState<number>(0);
+  console.log(activeSlide);
 
   const mainSettings = {
     dot: false,
@@ -24,7 +25,23 @@ export default function ProductSlider({ images }: { images: string[] }) {
   };
   const [navSlider, setNavSlider] = useState<Slider | any>();
   const [mainSlider, setMainSlider] = useState<Slider | any>();
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedImage, setSeletedImage] = useState<string>(images[0]);
+  // Handle open modal
+  const handleOnClick = () => {
+    setIsModalOpen(true);
+    console.log("open", isModalOpen);
+  };
 
+  // Handle close modal;
+  const handleOnClose = () => {
+    setIsModalOpen(false);
+  };
+
+  // Handle update selected image
+  useEffect(() => {
+    setSeletedImage(images[activeSlide]);
+  }, [activeSlide]);
   return (
     <>
       {/* Navigation Slider */}
@@ -61,9 +78,9 @@ export default function ProductSlider({ images }: { images: string[] }) {
         >
           {images.map((image, index) => (
             <div
-              onClick={() => {}}
+              onClick={handleOnClick}
               key={index}
-              className="bg-primary-100  max-w-full rounded-md flex justify-center items-center overflow-hidden cursor-pointer"
+              className="bg-primary-800  max-w-full rounded-md flex justify-center items-center overflow-hidden cursor-pointer"
             >
               <Image
                 layout="responsive"
@@ -73,10 +90,15 @@ export default function ProductSlider({ images }: { images: string[] }) {
                 src={image}
                 alt="product image"
               />
-              {/* <ImageModal image={image} /> */}
             </div>
           ))}
         </Slider>
+        {/* Modal image use MUI */}
+        <ImageModal
+          image={selectedImage}
+          isModalOpen={isModalOpen}
+          onClose={handleOnClose}
+        />
       </div>
     </>
   );

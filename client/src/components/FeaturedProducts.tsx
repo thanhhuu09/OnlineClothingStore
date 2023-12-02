@@ -27,18 +27,13 @@ export default function FeaturedProducts() {
       }
     };
     fetchProducts();
+    return () => {
+      setProducts([]);
+    };
   }, []);
 
   return (
     <div>
-      <h1 className="text-center text-4xl text-primary-700 font-extrabold p-16">
-        SẢN PHẨM BÁN CHẠY
-      </h1>
-      {/* <div className="flex gap-4 justify-between px-16">
-        {products.map((product: Product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div> */}
       <div className="p-4">
         <Slider {...settings}>
           {products?.map((product: Product) => (

@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@/interfaces/productInterface";
-import { Heart, Eye, Star } from "@phosphor-icons/react";
+import { Heart, Eye, Star, ShoppingCart } from "@phosphor-icons/react";
 import { Rating } from "@mui/material";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -54,6 +54,11 @@ export default function ProductCard({ product }: ProductCardProps) {
             <Eye size={26} color="black" />
           </div>
         </div>
+        {/* Add to cart */}
+        <button className="absolute flex justify-center items-center bg-primary-900 -bottom-14 group-hover:bottom-0 w-full text-center transition-all duration-300 opacity-90">
+          <ShoppingCart size={26} className="text-slate-50" />
+          <p className="text-primary-50 p-4 text-base">Thêm vào giỏ hàng</p>
+        </button>
       </div>
       {/* Bottom Section */}
       <div className="mt-4">

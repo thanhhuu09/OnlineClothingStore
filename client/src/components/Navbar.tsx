@@ -2,8 +2,10 @@
 import { MagnifyingGlass, ShoppingBag } from "@phosphor-icons/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useStateContext } from "@/context/StateContext";
 
 export default function Navbar() {
+  const { setShowCart } = useStateContext();
   return (
     <nav className="bg-white sticky w-full z-20 top-0 left-0 border-b-slate-600">
       <div className="flex justify-between items-center px-12 py-2">
@@ -31,10 +33,12 @@ export default function Navbar() {
           </li>
           <li className="cursor-pointer">
             <div className="relative">
-              <ShoppingBag size={24} color="black" />
-              <span className="absolute bottom-3 left-3 bg-secondary-600 text-pr rounded-full p-1 text-sm text-secondary-50 w-5 h-5 flex justify-center items-center">
-                3
-              </span>
+              <button onClick={() => setShowCart(true)}>
+                <ShoppingBag size={24} color="black" />
+                <p className="absolute bottom-3 left-3 bg-secondary-600 text-pr rounded-full p-1 text-sm text-secondary-50 w-5 h-5 flex justify-center items-center">
+                  3
+                </p>
+              </button>
             </div>
           </li>
           <li>

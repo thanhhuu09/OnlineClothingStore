@@ -7,8 +7,9 @@ import { Rating } from "@mui/material";
 import { Heart, Minus, Plus, Repeat, Truck } from "@phosphor-icons/react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import Slider from "react-slick";
+import { useStateContext } from "@/context/StateContext";
 
 export default function Page() {
   const { id } = useParams();
@@ -22,10 +23,12 @@ export default function Page() {
     "/images/five.jpg",
     "/images/six.jpg",
   ];
+
   // Use keep track of selected size
   const [selectedSize, setSelectedSize] = useState<string>(productSizes[0]);
   const [selectedColor, setSelectedColor] = useState<string>(productColors[0]);
-  const [quantity, setQuality] = useState<number>(1);
+  // const [quantity, setQuality] = useState<number>(1);
+  const { decrementQuantity, incrementQuantity, quantity } = useStateContext();
   // Handle data from child component when is clicked
   const handleSizeChange = (size: string) => {
     setSelectedSize(size);
@@ -33,14 +36,8 @@ export default function Page() {
   const handleOnColorChange = (color: string) => {
     setSelectedColor(color);
   };
-  const handleDecreaseQuality = () => {
-    if (quantity > 1) {
-      setQuality(quantity - 1);
-    }
-  };
-  const handleIncreaseQuality = () => {
-    setQuality(quantity + 1);
-  };
+
+  console.log(useStateContext());
 
   return (
     <>
@@ -99,7 +96,7 @@ export default function Page() {
             {/* Button decrease quantity */}
             <div className="flex">
               <button
-                onClick={handleDecreaseQuality}
+                onClick={decrementQuantity}
                 className="border bg-primary-50 border-primary-400 border-solid p-1 rounded-l hover:bg-primary-100 active:bg-primary-200 focus:outline-none"
               >
                 <Minus size={26} />
@@ -109,7 +106,7 @@ export default function Page() {
               </p>
               {/* Button increase quantity */}
               <button
-                onClick={handleIncreaseQuality}
+                onClick={incrementQuantity}
                 className="border border-primary-400 border-solid bg-secondary-500 p-1 rounded-r hover:bg-secondary-600 active:bg-secondary-700 focus:outline-none"
               >
                 <Plus size={26} className="text-slate-50" />

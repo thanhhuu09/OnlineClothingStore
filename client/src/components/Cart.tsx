@@ -10,6 +10,8 @@ export default function Cart() {
   // Close sidebar when click outside
   useEffect(() => {
     const handleClickOutside = (event: any) => {
+      console.log(event.target);
+
       if (cartRef.current && !cartRef.current.contains(event.target)) {
         setShowCart(false);
       }

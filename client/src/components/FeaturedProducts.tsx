@@ -4,11 +4,13 @@ import ProductCard from "./ProductCard";
 import { getProducts } from "@/api/products";
 import Slider from "react-slick";
 import { useEffect, useState } from "react";
+import ProductCardSkeleton from "./ProductCardSkeleton";
 // Featured Products Component
 
 export default function FeaturedProducts() {
   // Fetch data from API
   const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const settings = {
     dots: true,
@@ -22,6 +24,7 @@ export default function FeaturedProducts() {
       try {
         const res = await getProducts();
         setProducts(res);
+        setIsLoading(true);
       } catch (error) {
         console.error("Failed to fetch products:", error);
       }

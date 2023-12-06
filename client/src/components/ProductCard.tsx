@@ -15,7 +15,6 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const [isDragging, setIsDragging] = useState(false);
   const router = useRouter();
-  console.log(router);
   const handleDragStart = () => {
     setIsDragging(false);
     console.log("one mouse down");

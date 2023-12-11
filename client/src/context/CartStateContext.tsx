@@ -1,7 +1,7 @@
-// State Context for the application
+// CartStateContext for the cart sidebar
 "use client";
 import { createContext, useContext, useState } from "react";
-interface StateContext {
+interface CartStateContext {
   showCart: boolean;
   setShowCart: (show: boolean) => void;
   cardItems: any[];
@@ -11,7 +11,7 @@ interface StateContext {
   incrementQuantity: () => void;
   decrementQuantity: () => void;
 }
-const defaultState: StateContext = {
+const defaultState: CartStateContext = {
   showCart: false,
   setShowCart: () => {},
   cardItems: [],
@@ -22,9 +22,9 @@ const defaultState: StateContext = {
   decrementQuantity: () => {},
 };
 
-const Context = createContext<StateContext>(defaultState);
+const cartContext = createContext<CartStateContext>(defaultState);
 
-export const StateProvider = ({ children }: any) => {
+export const CartProvider = ({ children }: any) => {
   const [showCart, setShowCart] = useState<boolean>(false);
   const [cardItems, setCardItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
@@ -44,7 +44,7 @@ export const StateProvider = ({ children }: any) => {
   // Increment Total Quantity
 
   return (
-    <Context.Provider
+    <cartContext.Provider
       value={{
         showCart,
         setShowCart,
@@ -57,12 +57,12 @@ export const StateProvider = ({ children }: any) => {
       }}
     >
       {children}
-    </Context.Provider>
+    </cartContext.Provider>
   );
 };
 
 // useStateContext is a custom hook and
 // useContext must be called the function component or custom hook
 export function useStateContext() {
-  return useContext(Context);
+  return useContext(cartContext);
 }

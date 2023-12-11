@@ -1,6 +1,6 @@
 import { CaretDown, CaretUp, X } from "@phosphor-icons/react";
 import Image from "next/image";
-import { useStateContext } from "@/context/StateContext";
+import { useStateContext } from "@/context/CartStateContext";
 
 export default function ProductTable() {
   const { quantity, decrementQuantity, incrementQuantity } = useStateContext();

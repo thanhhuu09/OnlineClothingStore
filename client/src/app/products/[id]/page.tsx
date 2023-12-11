@@ -1,18 +1,27 @@
 "use client";
-import ColorBox from "@/components/ColorBox";
-import FeaturedProducts from "@/components/FeaturedProducts";
-import ProductSlider from "@/components/ProductSlider";
-import SizeBox from "@/components/SizeBox";
+import ColorBox from "@/components/product-details/ColorBox";
+import ProductSlider from "@/components/product-details/ProductSlider";
+import SizeBox from "@/components/product-details/SizeBox";
 import { Rating } from "@mui/material";
 import { Heart, Minus, Plus, Repeat, Truck } from "@phosphor-icons/react";
-import Image from "next/image";
 import { useParams } from "next/navigation";
-import { createContext, useContext, useEffect, useRef, useState } from "react";
-import Slider from "react-slick";
-import { useStateContext } from "@/context/StateContext";
+import { useEffect, useState } from "react";
+import { useStateContext } from "@/context/CartStateContext";
+import { getProductById } from "@/api/products";
+import { Product } from "@/interfaces/productInterface";
 
 export default function Page() {
+  // Get product id from url
+  const [product, setProduct] = useState<Product>();
+
   const { id } = useParams();
+  useEffect(() => {
+    const fetchProduct = async () => {
+      const product = await getProductById(id);
+      setProduct(product);
+    };
+    fetchProduct();
+  }, []);
   const productSizes = ["S", "M", "L", "XL"];
   const productColors = ["primary-100", "primary-200", "primary-300"];
   const productImages = [
@@ -23,11 +32,9 @@ export default function Page() {
     "/images/five.jpg",
     "/images/six.jpg",
   ];
-
   // Use keep track of selected size
   const [selectedSize, setSelectedSize] = useState<string>(productSizes[0]);
   const [selectedColor, setSelectedColor] = useState<string>(productColors[0]);
-  // const [quantity, setQuality] = useState<number>(1);
   const { decrementQuantity, incrementQuantity, quantity } = useStateContext();
   // Handle data from child component when is clicked
   const handleSizeChange = (size: string) => {
@@ -37,18 +44,18 @@ export default function Page() {
     setSelectedColor(color);
   };
 
-  console.log(useStateContext());
-
   return (
     <>
       {/* Product Detail */}
       <div className="flex gap-8 justify-between px-12">
         <ProductSlider images={productImages} />
         <div className="flex flex-col gap-5">
-          <h1 className="text-xl font-semibold">Havic HV G-92 Gamepad</h1>
+          <h1 className="text-xl font-semibold">{product?.title}</h1>
           <div className="flex gap-2 ">
             <Rating name="product-rating" defaultValue={4.5} precision={0.5} />
-            <p className="text-primary-600">(150 Reviews)</p>
+            <p className="text-primary-600">
+              ({product?.rating.count} Reviews)
+            </p>
             <p>|</p>
             <p className="text-green-600">In Stock</p>
           </div>

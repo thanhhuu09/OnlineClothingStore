@@ -17,11 +17,9 @@ export default function ProductCard({ product }: ProductCardProps) {
   const router = useRouter();
   const handleDragStart = () => {
     setIsDragging(false);
-    console.log("one mouse down");
   };
   const handleDragMove = () => {
     setIsDragging(true);
-    console.log("one mouse move");
   };
   const handleClick = () => {
     if (!isDragging) {
@@ -29,55 +27,53 @@ export default function ProductCard({ product }: ProductCardProps) {
     }
   };
   return (
-    <div>
-      {/* Top Section */}
-      <div className="overflow-hidden w-80 h-80 bg-white border border-gray-200 rounded-2xl shadow relative group">
-        <a
-          onMouseDown={handleDragStart}
-          onMouseMove={handleDragMove}
-          onClick={handleClick}
-        >
-          <Image
-            className="p-8 rounded-t-lg group-hover:scale-105 transition-all ease-in-out duration-300 cursor-pointer"
-            src={product.image}
-            alt={product.title}
-            fill
-            style={{ objectFit: "contain" }}
-          />
-        </a>
-        <div className="absolute top-0 -right-11 group-hover:right-0 p-3 opacity-0 group-hover:opacity-100 transition-all duration-300">
-          <div className="bg-slate-200 rounded-full p-2 mb-2 cursor-pointer">
-            <Heart size={26} color="black" />
+    <a
+      onMouseDown={handleDragStart}
+      onMouseMove={handleDragMove}
+      onClick={handleClick}
+    >
+      <div className="my-5 mr-5 cursor-pointer rounded-3xl bg-white shadow-lg transition-all duration-300 group">
+        <div className="p-4 relative overflow-hidden">
+          <div className="absolute z-10 top-0 -right-14 group-hover:right-4 transition-all duration-300 ease-in-out">
+            <div className="bg-primary-50 hover:bg-primary-200 shadow-sm rounded-full p-2.5 cursor-pointer w-fit">
+              <Eye size={24} className="text-primary-800" />
+            </div>
           </div>
-          <div className="bg-slate-200 rounded-full p-2 cursor-pointer">
-            <Eye size={26} color="black" />
+
+          <div className="relative w-full h-48 group-hover:scale-110 transition-transform ease-in-out duration-300 cursor-pointer">
+            <Image
+              className="rounded-xl"
+              fill
+              style={{ objectFit: "contain" }}
+              src={product.image}
+              alt={product.title}
+            />
+          </div>
+          <h1 className="my-4 truncate font-medium text-slate-900">
+            {product.title}
+          </h1>
+          <div className="flex items-center gap-2">
+            <Rating
+              key={product.id}
+              name="product_rating"
+              defaultValue={product.rating.rate}
+              precision={0.5}
+              readOnly
+              size="small"
+            />
+            <p className=" text-sm text-primary-600">
+              ({product.rating.count})
+            </p>
           </div>
         </div>
-        {/* Add to cart */}
-        <button className="absolute flex justify-center items-center bg-primary-900 -bottom-14 group-hover:bottom-0 w-full text-center transition-all duration-300 opacity-90">
-          <ShoppingCart size={26} className="text-slate-50" />
-          <p className="text-primary-50 p-4 text-base">Thêm vào giỏ hàng</p>
-        </button>
+        <hr />
+        <div className="flex justify-between items-center p-4">
+          <p className="text-2xl font-bold text-primary-800">{product.price}</p>
+          <button className="text-white bg-primary-600 hover:bg-primary-700 rounded-full px-4 py-2 transition-colors duration-300">
+            Add to Cart
+          </button>
+        </div>{" "}
       </div>
-      {/* Bottom Section */}
-      <div className="mt-4">
-        <h2 className="text-base font-semibold max-w-[200px] truncate">
-          {product.title}
-        </h2>
-        <div className="flex items-center gap-2 mt-2">
-          <h3 className="text-base font-semibold text-secondary-400">
-            {product.price}
-          </h3>
-          <Rating
-            key={product.id}
-            name="product-rating"
-            defaultValue={product.rating.rate}
-            precision={0.5}
-            readOnly
-          />
-          <p className="text-primary-600">({product.rating.count})</p>
-        </div>
-      </div>
-    </div>
+    </a>
   );
 }

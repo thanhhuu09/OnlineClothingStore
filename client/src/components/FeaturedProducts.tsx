@@ -18,6 +18,33 @@ export default function FeaturedProducts() {
     speed: 500,
     slidesToShow: 4,
     slidesToScroll: 3,
+    autoplay: true,
+    responsive: [
+      {
+        breakpoint: 1024, // breakpoint for desktop
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+        },
+      },
+      {
+        breakpoint: 768, // breakpoint for tablet
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          infinite: false,
+        },
+      },
+      {
+        breakpoint: 640, // breakpoint for mobile
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          infinite: false,
+          dots: false,
+        },
+      },
+    ],
   };
   useEffect(() => {
     const fetchProducts = async () => {
@@ -36,14 +63,15 @@ export default function FeaturedProducts() {
   }, []);
 
   return (
-    <div>
-      <div className="p-4">
-        <Slider {...settings}>
-          {products?.map((product: Product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </Slider>
-      </div>
-    </div>
+    <section className="bg-gradient-to-r from-primary-50 to-primary-100 px-10 py-24">
+      <h1 className="text-center text-4xl text-primary-700 font-extrabold mb-4">
+        SẢN PHẨM BÁN CHẠY
+      </h1>
+      <Slider {...settings}>
+        {products?.map((product: Product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </Slider>
+    </section>
   );
 }

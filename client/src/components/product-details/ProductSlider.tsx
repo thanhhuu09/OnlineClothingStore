@@ -26,7 +26,7 @@ export default function ProductSlider({ images }: { images: string[] }) {
   const [navSlider, setNavSlider] = useState<Slider | any>();
   const [mainSlider, setMainSlider] = useState<Slider | any>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedImage, setSeletedImage] = useState<string>(images[0]);
+  const [selectedImage, setSelectedImage] = useState<string>(images[0]);
   // Handle open modal
   const handleOnClick = () => {
     setIsModalOpen(true);
@@ -40,8 +40,8 @@ export default function ProductSlider({ images }: { images: string[] }) {
 
   // Handle update selected image
   useEffect(() => {
-    setSeletedImage(images[activeSlide]);
-  }, [activeSlide]);
+    setSelectedImage(images[activeSlide]);
+  }, [activeSlide, images]);
   return (
     <>
       {/* Navigation Slider */}

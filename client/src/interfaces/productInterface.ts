@@ -1,4 +1,4 @@
-export interface Product {
+interface IProduct {
   id: number;
   title: string;
   price: number;
@@ -10,3 +10,5 @@ export interface Product {
     count: number;
   };
 }
+
+export type { IProduct };

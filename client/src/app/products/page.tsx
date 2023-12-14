@@ -1,13 +1,13 @@
 // Product page
 "use client";
-import { Product } from "@/interfaces/productInterface";
+import { IProduct } from "@/interfaces/productInterface";
 import { getProducts } from "@/api/products";
 import ProductCard from "@/components/ProductCard";
 import Sidebar from "@/components/product-filter/Sidebar";
 import { useEffect, useState } from "react";
 
 export default function Page() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<IProduct[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string[]>([]);
 
   useEffect(() => {
@@ -30,14 +30,14 @@ export default function Page() {
     console.log(selectedCategory);
   };
   return (
-    <div className="grid grid-cols-4 gap-4 p-12">
+    <div className="grid grid-cols-4 gap-4 p-12 bg-slate-100">
       <div className="col-span-1 bg-white shadow-lg border p-9 h-fit">
         <Sidebar onCategorySelect={handleCategorySelect} />
       </div>
       <div className="col-span-3">
-        <div className="flex flex-wrap gap-9">
+        <div className="grid grid-cols-3">
           {products
-            .filter((product: Product) => {
+            .filter((product: IProduct) => {
               // If no category is selected, return all products
               if (selectedCategory.length === 0) {
                 return true;
@@ -46,7 +46,7 @@ export default function Page() {
                 return selectedCategory.includes(product.category);
               }
             })
-            .map((product: Product) => (
+            .map((product: IProduct) => (
               <ProductCard key={product.id} product={product} />
             ))}
         </div>

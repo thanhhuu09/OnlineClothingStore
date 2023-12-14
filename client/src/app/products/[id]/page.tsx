@@ -6,13 +6,12 @@ import { Rating } from "@mui/material";
 import { Heart, Minus, Plus, Repeat, Truck } from "@phosphor-icons/react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useStateContext } from "@/context/CartStateContext";
 import { getProductById } from "@/api/products";
-import { Product } from "@/interfaces/productInterface";
-
+import { IProduct } from "@/interfaces/productInterface";
+import { useCart } from "@/contexts/cartContext";
 export default function Page() {
   // Get product id from url
-  const [product, setProduct] = useState<Product>();
+  const [product, setProduct] = useState<IProduct>();
 
   const { id } = useParams();
   useEffect(() => {
@@ -21,7 +20,7 @@ export default function Page() {
       setProduct(product);
     };
     fetchProduct();
-  }, []);
+  }, [id]);
   const productSizes = ["S", "M", "L", "XL"];
   const productColors = ["primary-100", "primary-200", "primary-300"];
   const productImages = [
@@ -35,7 +34,16 @@ export default function Page() {
   // Use keep track of selected size
   const [selectedSize, setSelectedSize] = useState<string>(productSizes[0]);
   const [selectedColor, setSelectedColor] = useState<string>(productColors[0]);
-  const { decrementQuantity, incrementQuantity, quantity } = useStateContext();
+  // const { decrementQuantity, incrementQuantity, quantity } = useStateContext();
+  const { dispatch } = useCart();
+  const decrementQuantity = () => {
+    dispatch({ type: "DECREMENT_QUANTITY" });
+  };
+  const incrementQuantity = () => {
+    dispatch({ type: "INCREMENT_QUANTITY" });
+  };
+  const { quantity } = useCart().state;
+
   // Handle data from child component when is clicked
   const handleSizeChange = (size: string) => {
     setSelectedSize(size);
@@ -47,7 +55,7 @@ export default function Page() {
   return (
     <>
       {/* Product Detail */}
-      <div className="flex gap-8 justify-between px-12">
+      <div className="flex gap-8 justify-between p-12">
         <ProductSlider images={productImages} />
         <div className="flex flex-col gap-5">
           <h1 className="text-xl font-semibold">{product?.title}</h1>

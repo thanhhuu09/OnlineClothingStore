@@ -1,5 +1,5 @@
 "use client";
-import { Product } from "@/interfaces/productInterface";
+import { IProduct } from "@/interfaces/productInterface";
 import ProductCard from "./ProductCard";
 import { getProducts } from "@/api/products";
 import Slider from "react-slick";
@@ -9,7 +9,7 @@ import ProductCardSkeleton from "./ProductCardSkeleton";
 
 export default function FeaturedProducts() {
   // Fetch data from API
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<IProduct[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const settings = {
@@ -68,7 +68,7 @@ export default function FeaturedProducts() {
         SẢN PHẨM BÁN CHẠY
       </h1>
       <Slider {...settings}>
-        {products?.map((product: Product) => (
+        {products?.map((product: IProduct) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </Slider>

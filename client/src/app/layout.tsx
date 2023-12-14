@@ -4,7 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/Footer";
 const inter = Inter({ subsets: ["latin"] });
-import { CartProvider } from "@/context/CartStateContext";
+import { CartProvider } from "@/contexts/cartContext";
 import Cart from "@/components/cart/Cart";
 export const metadata: Metadata = {
   title: "Create Next App",

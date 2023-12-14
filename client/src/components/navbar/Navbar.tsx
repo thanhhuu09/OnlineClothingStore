@@ -2,14 +2,14 @@
 import { List, MagnifyingGlass, ShoppingBag } from "@phosphor-icons/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useStateContext } from "@/context/CartStateContext";
 import NavSidebar from "./NavSidebar";
 import { useState } from "react";
 import Submenu from "./Submenu";
+import { useCart } from "@/contexts/cartContext";
 
 export default function Navbar() {
-  const { setShowCart } = useStateContext();
   const [isSidebarOpen, setSidebarOpen] = useState<boolean>(false);
+  const { dispatch, state } = useCart();
   const [openSubmenu, setOpenSubmenu] = useState<string>("");
   const handleMouseOver = (label: string) => {
     setOpenSubmenu(label);
@@ -50,11 +50,11 @@ export default function Navbar() {
           <li className="cursor-pointer">
             <button
               className="relative flex justify-center"
-              onClick={() => setShowCart(true)}
+              onClick={() => dispatch({ type: "TOGGLE_CART" })}
             >
               <ShoppingBag size={24} color="black" />
               <p className="absolute bottom-3 left-3 bg-secondary-600 text-pr rounded-full p-1 text-sm text-secondary-50 w-5 h-5 flex justify-center items-center">
-                3
+                {state.totalQuantities}
               </p>
             </button>
           </li>

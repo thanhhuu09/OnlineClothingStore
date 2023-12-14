@@ -1,18 +1,22 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { Product } from "@/interfaces/productInterface";
+import { IProduct } from "@/interfaces/productInterface";
 import { Heart, Eye, Star, ShoppingCart } from "@phosphor-icons/react";
 import { Rating } from "@mui/material";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-// Product interface dùng để check kiểu dữ liệu của product nhận từ API
-// ProductCardProps sử dụng để check kiểu dữ liệu của props truyền vào ProductCard
+import { useCart } from "@/contexts/cartContext";
+
 interface ProductCardProps {
-  product: Product;
+  product: IProduct;
 }
 // Product Card Component
 export default function ProductCard({ product }: ProductCardProps) {
+  const { dispatch } = useCart();
+  const addToCartHandler = () => {
+    dispatch({ type: "ADD_TO_CART", payload: product });
+  };
   const [isDragging, setIsDragging] = useState(false);
   const router = useRouter();
   const handleDragStart = () => {
@@ -27,13 +31,13 @@ export default function ProductCard({ product }: ProductCardProps) {
     }
   };
   return (
-    <a
-      onMouseDown={handleDragStart}
-      onMouseMove={handleDragMove}
-      onClick={handleClick}
-    >
-      <div className="my-5 mr-5 cursor-pointer rounded-3xl bg-white shadow-lg transition-all duration-300 group">
-        <div className="p-4 relative overflow-hidden">
+    <div className="my-5 mr-5 cursor-pointer rounded-3xl bg-white shadow-lg transition-all duration-300 group">
+      <div className="p-4 relative overflow-hidden">
+        <a
+          onMouseDown={handleDragStart}
+          onMouseMove={handleDragMove}
+          onClick={handleClick}
+        >
           <div className="absolute z-10 top-0 -right-14 group-hover:right-4 transition-all duration-300 ease-in-out">
             <div className="bg-primary-50 hover:bg-primary-200 shadow-sm rounded-full p-2.5 cursor-pointer w-fit">
               <Eye size={24} className="text-primary-800" />
@@ -47,33 +51,36 @@ export default function ProductCard({ product }: ProductCardProps) {
               style={{ objectFit: "contain" }}
               src={product.image}
               alt={product.title}
+              sizes="(max-width: 600px) 100vw, 600px"
             />
           </div>
-          <h1 className="my-4 truncate font-medium text-slate-900">
-            {product.title}
-          </h1>
-          <div className="flex items-center gap-2">
-            <Rating
-              key={product.id}
-              name="product_rating"
-              defaultValue={product.rating.rate}
-              precision={0.5}
-              readOnly
-              size="small"
-            />
-            <p className=" text-sm text-primary-600">
-              ({product.rating.count})
-            </p>
-          </div>
+        </a>
+        <h1 className="my-4 truncate font-medium text-slate-900">
+          {product.title}
+        </h1>
+        <div className="flex items-center gap-2">
+          <Rating
+            key={product.id}
+            name="product_rating"
+            defaultValue={product.rating.rate}
+            precision={0.5}
+            readOnly
+            size="small"
+          />
+          <p className=" text-sm text-primary-600">({product.rating.count})</p>
         </div>
-        <hr />
-        <div className="flex justify-between items-center p-4">
-          <p className="text-2xl font-bold text-primary-800">{product.price}</p>
-          <button className="text-white bg-primary-600 hover:bg-primary-700 rounded-full px-4 py-2 transition-colors duration-300">
-            Add to Cart
-          </button>
-        </div>{" "}
       </div>
-    </a>
+      <hr />
+      <div className="flex justify-between items-center p-4">
+        <p className="text-2xl font-bold text-primary-800">{product.price}</p>
+        <button
+          type="button"
+          onClick={addToCartHandler}
+          className="text-white bg-primary-600 hover:bg-primary-700 rounded-full px-4 py-2 transition-colors duration-300"
+        >
+          Thêm vào giỏ
+        </button>
+      </div>{" "}
+    </div>
   );
 }

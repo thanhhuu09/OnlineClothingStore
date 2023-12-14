@@ -1,19 +1,24 @@
 "use client";
-import { useStateContext } from "@/context/CartStateContext";
-import { X } from "@phosphor-icons/react";
+import { useCart } from "@/contexts/cartContext";
+import { X, ShoppingBag } from "@phosphor-icons/react";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
 
 export default function Cart() {
-  const { showCart, setShowCart } = useStateContext();
-  // Close sidebar when click outside
-
+  // const { showCart, setShowCart, cardItems, totalPrice } = useStateContext();
+  const { dispatch } = useCart();
+  const handleToggleCart = () => {
+    dispatch({ type: "TOGGLE_CART" });
+  };
+  const handleRemoveItem = (id: number) => {
+    dispatch({ type: "REMOVE_FROM_CART", payload: id });
+  };
+  const { showCart, cartItems, totalPrice } = useCart().state;
   return (
     <>
       {showCart && (
         <div
           className="fixed inset-0 bg-black opacity-40 z-20"
-          onClick={() => setShowCart(false)}
+          onClick={handleToggleCart}
         ></div>
       )}
 
@@ -27,51 +32,82 @@ export default function Cart() {
           <div className="justify-start items-center flex p-3 w-full">
             <button
               className="border border-primary-400 bg-secondary-500 hover:bg-secondary-600 active:bg-secondary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50 rounded-lg text-slate-50 font-semibold px-3 py-1 shadow-lg transition duration-200 ease-in-out transform hover:scale-105"
-              onClick={() => setShowCart(!showCart)}
+              onClick={handleToggleCart}
             >
               <X size={24} />
             </button>
-            <p className="text-2xl font-bold mx-auto">Giỏ hàng</p>
+            <p className="text-lg font-medium ml-3">Giỏ hàng</p>
           </div>
         </div>
         {/* Items */}
         <div>
-          <div className="flex justify-between items-center gap-4 px-3 py-2 border-b border-primary-400 border-solid">
-            {/* Image section */}
-            <div className="relative w-[100px] h-[100px]">
-              <Image
-                src="/images/one.jpg"
-                fill
-                alt="product image"
-                style={{ objectFit: "contain" }}
-              />
+          {cartItems.length === 0 ? (
+            // Empty cart
+            <div className="flex flex-col justify-center items-center gap-4 px-3 py-2 h-screen">
+              <ShoppingBag size={64} className="text-primary-700" />
+              <p className="text-lg font-medium">Giỏ hàng trống</p>
             </div>
-            {/* Info section */}
+          ) : (
+            // Cart items
             <div>
-              <p className="text-base font-medium">Áo thun nam</p>
-              <p className="text-sm font-normal">Màu: Đen</p>
-              <p className="text-sm font-normal">Size: M</p>
-              <p className="text-sm font-normal">Giá: 100.000đ</p>
-              <p className="text-sm font-normal">Số lượng: 1</p>
+              <div className="overflow-y-auto max-h-[calc(100vh-195px)] no-scrollbar">
+                {cartItems.map((item, index) => (
+                  <div key={index}>
+                    <div className="flex justify-between items-center gap-4 px-3 py-2 border-b border-primary-400 border-solid">
+                      {/* Image section */}
+                      <div className="relative w-[50px] h-[50px]">
+                        <Image
+                          src={item.image}
+                          fill
+                          alt="product image"
+                          style={{ objectFit: "contain" }}
+                        />
+                      </div>
+                      {/* Info section */}
+                      <div>
+                        <p className="text-base font-medium truncate w-[200px]">
+                          {item.title}
+                        </p>
+                        <p className="text-sm font-normal">Màu: Đen</p>
+                        <p className="text-sm font-normal">Size: M</p>
+                        <p className="text-sm font-normal">
+                          Giá: {item.price}đ
+                        </p>
+                        <p className="text-sm font-normal">
+                          Số lượng: {item.quantity}
+                        </p>
+                      </div>
+                      {/* Remove item */}
+                      <div className="border bg-white border-primary-400 border-solid p-1 rounded flex justify-center items-center hover:bg-primary-50 active:bg-primary-100 ">
+                        <button
+                          onClick={() => handleRemoveItem(item.id)}
+                          className="transition duration-200 ease-in-out transform hover:scale-105"
+                        >
+                          <X size={24} className="text-primary-700" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="">
+                {/* Total price section */}
+                <div className="flex justify-between items-center px-3 py-2 border-b border-primary-400 border-solid">
+                  <p className="text-base font-medium">Tổng tiền</p>
+                  <p className="text-base font-medium">
+                    {totalPrice.toFixed(2)}đ
+                  </p>
+                </div>
+                {/* Checkout section */}
+                <div className="flex justify-center items-center px-3 py-2">
+                  <button className="border border-primary-400 bg-secondary-500 hover:bg-secondary-600 active:bg-secondary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50 rounded-lg text-slate-50 font-semibold px-8 py-2 shadow-lg transition duration-200 ease-in-out transform hover:scale-105">
+                    Thanh toán
+                  </button>
+                </div>
+              </div>
             </div>
-            {/* Remove item */}
-            <div className="border bg-white border-primary-400 border-solid p-1 rounded flex justify-center items-center hover:bg-primary-50 active:bg-primary-100 ">
-              <button className="transition duration-200 ease-in-out transform hover:scale-105">
-                <X size={24} className="text-primary-700" />
-              </button>
-            </div>
-          </div>
-          {/* Total price section */}
-          <div className="flex justify-between items-center px-3 py-2 border-b border-primary-400 border-solid">
-            <p className="text-base font-medium">Tổng tiền</p>
-            <p className="text-base font-medium">100.000đ</p>
-          </div>
-          {/* Checkout section */}
-          <div className="flex justify-center items-center px-3 py-2">
-            <button className="border border-primary-400 bg-secondary-500 hover:bg-secondary-600 active:bg-secondary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50 rounded-lg text-slate-50 font-semibold px-8 py-2 shadow-lg transition duration-200 ease-in-out transform hover:scale-105">
-              Thanh toán
-            </button>
-          </div>
+          )}
         </div>
       </aside>
     </>

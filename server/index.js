@@ -6,8 +6,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
-// body-parser is a middleware that parses incoming requests with JSON payloads
-app.use(express.json());
+app.use(express.json()); // Used to parse JSON bodies
 
 // morgan is a middleware that logs HTTP requests
 app.use(morgan("dev"));
@@ -24,7 +23,10 @@ mongoose.connect(process.env.CONNECTION_STRING).then(() => {
 // Routes
 const authRoutes = require("./routes/auth");
 const productRoutes = require("./routes/product");
+const categoryRoutes = require("./routes/category");
 // Use Routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/products", productRoutes);
+app.use("/api/v1/categories", categoryRoutes);
+
 app.listen(port, () => console.log(`Server is running on port ${port}!`));

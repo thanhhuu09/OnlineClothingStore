@@ -1,6 +1,7 @@
 // Auth controllers
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const authController = {
   // Register a new user
@@ -33,7 +34,7 @@ const authController = {
       const user = await User.findOne({ email: req.body.email });
       // Check if user not found
       if (!user) {
-        res.status(400).json({ message: "User not found" });
+        return res.status(400).json({ message: "User not found" });
       } else {
         // Check if password is correct
         const passwordMatch = await bcrypt.compare(
@@ -41,9 +42,15 @@ const authController = {
           user.password
         );
         if (!passwordMatch) {
-          res.status(400).json({ message: "Incorrect password" });
+          return res.status(400).json({ message: "Incorrect password" });
         } else {
-          res.status(200).json(user);
+          // Create jwt token
+          const accessToken = jwt.sign(
+            { id: user._id, role: user.role },
+            process.env.JWT_ACCESS_SECRET,
+            { expiresIn: "1d" }
+          );
+          return res.status(200).json(user, accessToken);
         }
       }
     } catch (error) {

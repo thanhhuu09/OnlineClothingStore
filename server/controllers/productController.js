@@ -2,7 +2,7 @@
 const Product = require("../models/Product");
 
 const productController = {
-  // Get all products
+  // GET ALL PRODUCTS
   getAllProducts: async (req, res) => {
     try {
       const products = await Product.find();
@@ -14,7 +14,7 @@ const productController = {
       res.status(500).json({ msg: "Error fetching products" });
     }
   },
-  // Get product by id
+  // GET PRODUCT BY ID
   getProductById: async (req, res) => {
     try {
       const product = await Product.findById(req.params.id);
@@ -29,7 +29,7 @@ const productController = {
       res.status(500).json({ msg: "Error fetching product" });
     }
   },
-  // Create new product
+  // CREATE A PRODUCT
   createProduct: async (req, res) => {
     try {
       const newProduct = await new Product(req.body);
@@ -42,17 +42,17 @@ const productController = {
       res.status(500).json({ msg: "Error creating product" });
     }
   },
-  // Delete product by id
+  // DELETE A PRODUCT
   deleteProduct: async (req, res) => {
     try {
       const deletedProduct = await Product.findByIdAndDelete(req.params.id);
 
       if (!deletedProduct) {
-        return res.status(404).json({ message: "Product not found" });
+        return res.status(404).json({ msg: "Product not found" });
       }
 
       res.status(200).json({
-        message: "Product deleted successfully",
+        msg: "Product deleted successfully",
         data: deletedProduct,
       });
     } catch (error) {
@@ -60,7 +60,7 @@ const productController = {
       res.status(500).json({ msg: "Error deleting product" });
     }
   },
-  // Update product by id
+  // UPDATE A PRODUCT
   updateProduct: async (req, res) => {
     try {
       const updateProduct = await Product.findByIdAndUpdate(
@@ -75,10 +75,10 @@ const productController = {
 
       res
         .status(200)
-        .json({ message: "Product updated successfully", data: updateProduct });
+        .json({ msg: "Product updated successfully", data: updateProduct });
     } catch (error) {
       console.error(`Error updating product with ID ${req.params.id}:`, error);
-      res.status(500).json({ message: "Error updating product" });
+      res.status(500).json({ msg: "Error updating product" });
     }
   },
 };

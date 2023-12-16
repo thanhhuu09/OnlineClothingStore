@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express();
-const port = 5000;
 const morgan = require("morgan");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -24,9 +23,14 @@ mongoose.connect(process.env.CONNECTION_STRING).then(() => {
 const authRoutes = require("./routes/auth");
 const productRoutes = require("./routes/product");
 const categoryRoutes = require("./routes/category");
-// Use Routes
+const userRoutes = require("./routes/user");
+
+// Use routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/categories", categoryRoutes);
+app.use("/api/v1/users", userRoutes);
 
-app.listen(port, () => console.log(`Server is running on port ${port}!`));
+// Start server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

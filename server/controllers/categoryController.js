@@ -1,6 +1,7 @@
 const Category = require("../models/Category");
 
 const categoryController = {
+  // GET ALL CATEGORIES
   getAllCategories: async (req, res) => {
     try {
       const categories = await Category.find();
@@ -9,6 +10,7 @@ const categoryController = {
       return res.status(500).json({ msg: error.message });
     }
   },
+  // CREATE A CATEGORY
   createCategory: async (req, res) => {
     try {
       const { name } = req.body;
@@ -23,6 +25,7 @@ const categoryController = {
       return res.status(500).json({ msg: error.message });
     }
   },
+  // DELETE A CATEGORY
   deleteCategory: async (req, res) => {
     try {
       const deletedCategory = await Category.findByIdAndDelete(req.params.id);
@@ -34,6 +37,7 @@ const categoryController = {
       return res.status(500).json({ msg: error.message });
     }
   },
+  // UPDATE A CATEGORY
   updateCategory: async (req, res) => {
     try {
       const { name } = req.body;
@@ -50,6 +54,7 @@ const categoryController = {
       return res.status(500).json({ msg: error.message });
     }
   },
+  // GET A CATEGORY BY ID
   getCategoryById: async (req, res) => {
     try {
       const category = await Category.findById(req.params.id);

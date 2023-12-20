@@ -52,6 +52,7 @@ const verifyTokenAndAuth = (req, res, next) => {
     const { params } = req;
 
     if (role === "admin" || id === params.id) {
+      req.user = id;
       next();
     } else {
       console.error("Unauthorized access: Forbidden");

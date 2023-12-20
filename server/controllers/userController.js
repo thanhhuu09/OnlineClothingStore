@@ -5,6 +5,7 @@ const userController = {
   // GET ALL USERS (admin only)
   getAllUsers: async (req, res) => {
     try {
+      console.log("req.user", req);
       const users = await User.find();
       if (users.length === 0) {
         return res.status(404).json({ error: "Users not found" });
@@ -66,24 +67,32 @@ const userController = {
   // CHANGE USER PASSWORD (admin only or user)
   changePassword: async (req, res) => {
     try {
-      const { newPassword } = req.body;
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(newPassword, salt);
-      // Update user with new password
-      const updatedUser = await User.findByIdAndUpdate(
-        { _id: req.params.id },
-        { password: hashedPassword }
-      );
-      if (!updatedUser) {
+      const { id } = req.params;
+      const { oldPassword, newPassword } = req.body;
+
+      // Get user from DB
+      const user = await User.findById(id);
+      if (!user) {
         return res.status(404).json({ error: "User not found" });
       }
-      res.status(200).json({ msg: "Password changed successfully" });
+
+      // Compare old password with password in DB
+      const isSamePassword = await bcrypt.compare(oldPassword, user.password);
+      if (!isSamePassword) {
+        return res.status(400).json({ error: "Incorrect password" });
+      }
+
+      // Update password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+      user.password = hashedPassword; // Set new password
+      await user.save(); // Save user in DB
+
+      res.status(200).json({ msg: "Password updated successfully" });
     } catch (error) {
-      console.error(
-        `Error changing password for user with ID ${req.params.id}:`,
-        error
-      );
-      res.status(500).json({ error: error.message });
+      console.error("Error changing password:", error);
+      res.status(500).json({ error: "Internal Server Error" });
     }
   },
 };

@@ -55,6 +55,96 @@ const addItemToCart = async (req, res) => {
   }
 };
 
+// Update cart
+// PUT /api/v1/cart/items/:itemId (itemId = cart item id)
+const updateItemInCart = async (req, res) => {
+  try {
+    const { quantity, size, color } = req.body;
+    const itemId = req.params.itemId;
+    const userId = req.user.id; // From authentication middleware
+    console.log(userId);
+    const userCart = await Cart.findOne({ userId });
+    if (!userCart) {
+      return res.status(400).json({ msg: "Cart does not exist." });
+    }
+    const item = userCart.cartItems.find(
+      (item) => item._id.toString() === itemId
+    );
+    if (!item) {
+      return res.status(400).json({ msg: "Item does not exist." });
+    }
+    // update item details
+    if (quantity) item.quantity = quantity;
+    if (size) item.size = size;
+    if (color) item.color = color;
+    // update total price
+    userCart.totalPrice = userCart.cartItems.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    );
+    console.log(userCart.totalPrice);
+    await userCart.save();
+    return res
+      .status(200)
+      .json({ msg: "Cart item updated successfully", data: userCart });
+  } catch (error) {
+    return res.status(500).json({ msg: error.message });
+  }
+};
+
+// Delete item from cart
+// DELETE /api/v1/cart/items/:itemId (itemId = cart item id)
+const deleteItemFromCart = async (req, res) => {
+  try {
+    const itemId = req.params.itemId;
+    const userId = req.user.id; // From authentication middleware
+    const userCart = await Cart.findOne({ userId });
+    if (!userCart) {
+      return res.status(400).json({ msg: "Cart does not exist." });
+    }
+    const item = userCart.cartItems.find(
+      (item) => item._id.toString() === itemId
+    );
+    if (!item) {
+      return res.status(400).json({ msg: "Item does not exist." });
+    }
+
+    // remove item from cart
+    userCart.cartItems = userCart.cartItems.filter(
+      (item) => item._id.toString() !== itemId
+    );
+    // update total price
+    userCart.totalPrice = userCart.cartItems.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    );
+    await userCart.save();
+    return res
+      .status(200)
+      .json({ msg: "Cart item deleted successfully", data: userCart });
+  } catch (error) {
+    return res.status(500).json({ msg: error.message });
+  }
+};
+// Get user cart
+// GET /api/v1/cart
+const getUserCart = async (req, res) => {
+  try {
+    const userId = req.user.id; // From authentication middleware
+    const userCart = await Cart.findOne({ userId });
+    if (!userCart) {
+      return res.status(400).json({ msg: "Cart does not exist." });
+    }
+    return res
+      .status(200)
+      .json({ msg: "Get user cart successfully", data: userCart });
+  } catch (error) {
+    return res.status(500).json({ msg: error.message });
+  }
+};
 module.exports = {
   addItemToCart,
+  updateItemInCart,
+  deleteItemFromCart,
+  getUserCart,
 };

@@ -1,12 +1,15 @@
 const Cart = require("../models/Cart");
 const Product = require("../models/Product");
+
+// Add to cart - POST /api/v1/cart/:userId
 const addItemToCart = async (req, res) => {
   try {
     const { productId, quantity, size, color } = req.body;
+    const { userId } = req.params;
+
     if (!productId || !quantity || !size || !color) {
       return res.status(400).json({ msg: "Please fill in all fields." });
     }
-    const userId = req.user.id; // From authentication middleware
 
     const product = await Product.findById(productId);
     if (!product) {
@@ -56,13 +59,12 @@ const addItemToCart = async (req, res) => {
 };
 
 // Update cart
-// PUT /api/v1/cart/items/:itemId (itemId = cart item id)
+// PUT /api/v1/cart/:userId/items/:itemId (itemId = cart item id)
 const updateItemInCart = async (req, res) => {
   try {
     const { quantity, size, color } = req.body;
-    const itemId = req.params.itemId;
-    const userId = req.user.id; // From authentication middleware
-    console.log(userId);
+    const { userId, itemId } = req.params;
+
     const userCart = await Cart.findOne({ userId });
     if (!userCart) {
       return res.status(400).json({ msg: "Cart does not exist." });
@@ -126,11 +128,11 @@ const deleteItemFromCart = async (req, res) => {
     return res.status(500).json({ msg: error.message });
   }
 };
-// Get user cart
-// GET /api/v1/cart
+// Get user cart - GET /api/v1/cart/:userId
+// Admin can get any user's cart, user can only get their own cart
 const getUserCart = async (req, res) => {
   try {
-    const userId = req.user.id; // From authentication middleware
+    const userId = req.params.userId;
     const userCart = await Cart.findOne({ userId });
     if (!userCart) {
       return res.status(400).json({ msg: "Cart does not exist." });

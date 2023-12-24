@@ -12,17 +12,25 @@ const {
 router.get("/", authenticationMiddleware.verifyTokenAndAdminAuth, getAllUsers);
 
 // Get user by ID (admin only or user)
-router.get("/:id", authenticationMiddleware.verifyTokenAndAuth, getUserById);
+router.get(
+  "/:userId",
+  authenticationMiddleware.verifyTokenAndAuth,
+  getUserById
+);
 
 // Update user (admin only or user)
-router.put("/:id", authenticationMiddleware.verifyTokenAndAuth, updateUser);
+router.put("/:userId", authenticationMiddleware.verifyTokenAndAuth, updateUser);
 
 // Delete user (admin only or user)
-router.delete("/:id", authenticationMiddleware.verifyTokenAndAuth, deleteUser);
+router.delete(
+  "/:userId",
+  authenticationMiddleware.verifyTokenAndAuth,
+  deleteUser
+);
 
 // Change password (admin only or user)
 router.put(
-  "/:id/password",
+  "/:userId/password",
   authenticationMiddleware.verifyTokenAndAuth,
   changePassword
 );

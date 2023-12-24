@@ -48,11 +48,12 @@ const verifyTokenAndAdminAuth = (req, res, next) => {
 // Verify if user is admin or user owns the account
 const verifyTokenAndAuth = (req, res, next) => {
   verifyToken(req, res, () => {
-    const { role, id } = req.user;
-    const { params } = req;
+    const { role, id } = req.user; // user id and role from token
+    const { params } = req; // user id from params
+    const { body } = req; // user id from body
 
-    if (role === "admin" || id === params.id) {
-      req.user = id;
+    if (role === "admin" || id === params.userId || id === body.userId) {
+      req.user = { id, role };
       next();
     } else {
       console.error("Unauthorized access: Forbidden");

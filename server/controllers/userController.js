@@ -5,7 +5,6 @@ const userController = {
   // GET ALL USERS (admin only)
   getAllUsers: async (req, res) => {
     try {
-      console.log("req.user", req);
       const users = await User.find();
       if (users.length === 0) {
         return res.status(404).json({ error: "Users not found" });
@@ -19,7 +18,7 @@ const userController = {
   // GET USER BY ID (admin only or user)
   getUserById: async (req, res) => {
     try {
-      const user = await User.findById(req.params.id);
+      const user = await User.findById(req.params.userId);
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }
@@ -34,7 +33,7 @@ const userController = {
     try {
       const { firstName, lastName, email } = req.body;
       const updatedUser = await User.findByIdAndUpdate(
-        { _id: req.params.id },
+        { _id: req.params.userId },
         { firstName, lastName, email },
         { new: true }
       );
@@ -52,7 +51,7 @@ const userController = {
   // DELETE USER (admin only or user)
   deleteUser: async (req, res) => {
     try {
-      const deletedUser = await User.findByIdAndDelete(req.params.id);
+      const deletedUser = await User.findByIdAndDelete(req.params.userId);
       if (!deletedUser) {
         return res.status(404).json({ error: "User not found" });
       }
@@ -67,11 +66,11 @@ const userController = {
   // CHANGE USER PASSWORD (admin only or user)
   changePassword: async (req, res) => {
     try {
-      const { id } = req.params;
+      const { userId } = req.params;
       const { oldPassword, newPassword } = req.body;
 
       // Get user from DB
-      const user = await User.findById(id);
+      const user = await User.findById(userId);
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }

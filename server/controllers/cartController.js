@@ -1,12 +1,15 @@
 const Cart = require("../models/Cart");
 const Product = require("../models/Product");
+const Voucher = require("../models/Voucher");
 
-// Add to cart - POST /api/v1/cart/:userId
+// Add to cart - POST /api/v1/carts
 const addItemToCart = async (req, res) => {
   try {
-    const { productId, quantity, size, color } = req.body;
-    const { userId } = req.params;
-
+    const { userId, productId, quantity, size, color } = req.body;
+    const { id, role } = req.user; // user id and role from token
+    if (role === "user" && id !== userId) {
+      return res.status(403).json({ msg: "Forbidden" });
+    }
     if (!productId || !quantity || !size || !color) {
       return res.status(400).json({ msg: "Please fill in all fields." });
     }
@@ -59,7 +62,7 @@ const addItemToCart = async (req, res) => {
 };
 
 // Update cart
-// PUT /api/v1/cart/:userId/items/:itemId (itemId = cart item id)
+// PUT /api/v1/carts/:userId/items/:itemId (itemId = cart item id)
 const updateItemInCart = async (req, res) => {
   try {
     const { quantity, size, color } = req.body;
@@ -95,11 +98,10 @@ const updateItemInCart = async (req, res) => {
 };
 
 // Delete item from cart
-// DELETE /api/v1/cart/items/:itemId (itemId = cart item id)
+// DELETE /api/v1/carts/:userId/items/:itemId
 const deleteItemFromCart = async (req, res) => {
   try {
-    const itemId = req.params.itemId;
-    const userId = req.user.id; // From authentication middleware
+    const { userId, itemId } = req.params;
     const userCart = await Cart.findOne({ userId });
     if (!userCart) {
       return res.status(400).json({ msg: "Cart does not exist." });
@@ -128,12 +130,15 @@ const deleteItemFromCart = async (req, res) => {
     return res.status(500).json({ msg: error.message });
   }
 };
-// Get user cart - GET /api/v1/cart/:userId
+
+// Get user cart - GET /api/v1/carts/:userId
 // Admin can get any user's cart, user can only get their own cart
 const getUserCart = async (req, res) => {
   try {
-    const userId = req.params.userId;
-    const userCart = await Cart.findOne({ userId });
+    const { userId } = req.params;
+    const userCart = await Cart.findOne({ userId }).populate(
+      "cartItems.productId"
+    ); // populate cartItems with product details
     if (!userCart) {
       return res.status(400).json({ msg: "Cart does not exist." });
     }
@@ -144,9 +149,67 @@ const getUserCart = async (req, res) => {
     return res.status(500).json({ msg: error.message });
   }
 };
+
+// Check out - POST /api/v1/carts/checkout
+// Admin can check out any user's cart, user can only check out their own cart
+const checkout = async (req, res) => {
+  try {
+    const { userId, voucherCode } = req.body;
+    const { id, role } = req.user; // user id and role from token
+    if (role === "user" && id !== userId) {
+      return res.status(403).json({ msg: "Forbidden" });
+    }
+    // Check if user has cart
+    const userCart = await Cart.findOne({ userId });
+    if (!userCart) {
+      return res.status(400).json({ msg: "Cart does not exist." });
+    }
+    // Check if voucher exists
+    const currentDate = new Date();
+    const voucher = await Voucher.findOne({
+      code: voucherCode,
+    });
+
+    // Check if voucher is valid
+    if (!voucher) {
+      return res.status(400).json({ msg: "Voucher does not exist." });
+    } else if (
+      voucher.expiryDate < currentDate ||
+      voucher.maxUsage <= voucher.usageCount
+    ) {
+      return res.status(400).json({ msg: "Voucher has expired." });
+    } else if (voucher.usersId.includes(userId)) {
+      return res.status(400).json({ msg: "Voucher has been used." });
+    } else {
+      // If voucher exists, apply discount
+      userCart.voucher = voucher._id; // add voucher to cart
+      userCart.voucherDiscount =
+        (voucher.discountPercentage / 100) * userCart.totalPrice; // calculate discount
+      voucher.usageCount += 1; // update usage count
+      userCart.totalPrice -= userCart.voucherDiscount; // update total price
+      voucher.usersId.push(userId); // make sure user cannot use voucher again
+      await userCart.save();
+      await voucher.save();
+      return res
+        .status(200)
+        .json({ msg: "Checkout successful", data: userCart });
+    }
+  } catch (error) {
+    return res.status(500).json({ msg: error.message });
+  }
+};
+
 module.exports = {
   addItemToCart,
   updateItemInCart,
   deleteItemFromCart,
   getUserCart,
+  checkout,
 };
+
+// Routes:
+// - POST /api/v1/carts
+// - PUT /api/v1/carts/:userId/items/:itemId
+// - DELETE /api/v1/carts/:userId/items/:itemId
+// - GET /api/v1/carts/:userId
+// - POST /api/v1/carts/checkout

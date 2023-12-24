@@ -2,17 +2,27 @@
 const router = require("express").Router();
 const cartController = require("../controllers/cartController");
 const {
-  verifyToken,
   verifyTokenAndAuth,
 } = require("../middleware/authenticationMiddleware");
 
-// Add to cart
-router.post("/:userId", verifyToken, cartController.addItemToCart);
+router.post("/", verifyTokenAndAuth, cartController.addItemToCart); // Add item to cart
+// Update item in cart
 router.put(
-  "/:userId/items/:itemId ",
-  verifyToken,
+  "/:userId/items/:itemId",
+  verifyTokenAndAuth,
   cartController.updateItemInCart
 );
-router.delete("/items/:itemId", verifyToken, cartController.deleteItemFromCart);
+
+// Delete item from cart
+router.delete(
+  "/:userId/items/:itemId",
+  verifyTokenAndAuth,
+  cartController.deleteItemFromCart
+);
+
+// Checkout cart
+router.post("/checkout", verifyTokenAndAuth, cartController.checkout);
+
+// Get user cart
 router.get("/:userId", verifyTokenAndAuth, cartController.getUserCart);
 module.exports = router;

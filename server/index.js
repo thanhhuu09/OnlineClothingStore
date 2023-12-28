@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 app.use(express.json()); // Used to parse JSON bodies
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 
 // morgan is a middleware that logs HTTP requests
 app.use(morgan("dev"));
@@ -26,6 +27,8 @@ const categoryRoutes = require("./routes/category");
 const userRoutes = require("./routes/user");
 const cartRoutes = require("./routes/cart");
 const voucherRoutes = require("./routes/voucher");
+const orderRoutes = require("./routes/order");
+
 // Use routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/products", productRoutes);
@@ -33,6 +36,10 @@ app.use("/api/v1/categories", categoryRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/carts", cartRoutes);
 app.use("/api/v1/vouchers", voucherRoutes);
+app.use("/api/v1/orders", orderRoutes);
+
+// Payment Routes
+app.use("/api/v1/payment", require("./paymentGateway/paymentRoutes"));
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

@@ -1,7 +1,58 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import React, { useState } from "react";
+import userService from "@/services/userService";
+import { useDispatch } from "react-redux";
+import { AppDispatch, useAppSelector } from "@/redux/store";
+import { useRouter } from "next/navigation";
+import FormInput from "@/components/FormInput";
+import { IUserLogin } from "@/interfaces/userInterface";
+import FormButton from "@/components/FormButton";
 
 export default function Page() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { isFetching } = useAppSelector((state) => state.auth.login); // Get error from redux store
+  const router = useRouter();
+  // State for form inputs
+  const [formData, setFormData] = useState<IUserLogin>({
+    email: "",
+    password: "",
+  });
+  // Error state for form validation
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
+  // Handle form input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  // Handle form validation field
+  const validateForm = () => {
+    let temp = { ...errors };
+    temp.email = formData.email ? "" : "Email không được để trống";
+    temp.password = formData.password ? "" : "Mật khẩu không được để trống";
+
+    setErrors(temp);
+    return temp;
+  };
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const isErrors = Object.values(validateForm()).some((x) => x !== ""); // Check if there is any error in form validation
+    if (isErrors) return;
+    const isLoginSuccess = await userService.login(formData, dispatch, router);
+    if (!isLoginSuccess) {
+      setErrors({
+        ...errors,
+        email: " ",
+        password: "Email hoặc mật khẩu không đúng",
+      });
+    }
+  };
   return (
     <section className="bg-gray-50">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
@@ -24,37 +75,29 @@ export default function Page() {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
               Chào mừng bạn quay trở lại!👋
             </h1>
-            <form action="space-y-4 md:space-y-6" method="post">
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  Email của bạn
-                </label>
-                <input
-                  type="email"
-                  name="email"
+            <form onSubmit={handleLogin} noValidate>
+              <div className="mb-2">
+                <FormInput
+                  label="Email"
                   id="email"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 mb-4"
-                  placeholder="name@company.com"
-                  required
+                  name="email"
+                  onChange={handleInputChange}
+                  errorMessages={errors.email}
+                  placeholder="name@gmail.com"
+                  type="email"
+                  value={formData.email}
                 />
               </div>
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  Mật khẩu
-                </label>
-                <input
-                  type="password"
-                  name="password"
+              <div className="mb-2">
+                <FormInput
                   id="password"
+                  label="Mật khẩu"
+                  name="password"
+                  onChange={handleInputChange}
+                  errorMessages={errors.password}
                   placeholder="••••••••"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 mb-4"
-                  required
+                  type="password"
+                  value={formData.password}
                 />
               </div>
               <div className="flex items-center justify-between mb-4">
@@ -65,7 +108,6 @@ export default function Page() {
                       aria-describedby="remember"
                       type="checkbox"
                       className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300"
-                      required
                     />
                   </div>
                   <div className="ml-3 text-sm">
@@ -81,16 +123,18 @@ export default function Page() {
                   Quên mật khẩu?
                 </Link>
               </div>
-              <button
-                type="submit"
-                className="w-full mb-4 text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center "
-              >
-                Đăng nhập
-              </button>
+              <div className="mb-2">
+                <FormButton
+                  label="Đăng nhập"
+                  isDisabled={isFetching}
+                  isFetching={isFetching}
+                />
+              </div>
+
               <p className="text-sm font-light text-gray-500">
                 Chưa có tài khoản?{" "}
                 <Link
-                  href="#"
+                  href="/auth/register"
                   className="font-medium text-primary-600 hover:underline"
                 >
                   Đăng ký ngay

@@ -1,18 +1,27 @@
 "use client";
-import { useCart } from "@/contexts/cartContext";
+import {
+  addToCart,
+  toggleCart,
+  deleteFromCart,
+} from "@/redux/features/cartSlice";
+import { AppDispatch, useAppSelector } from "@/redux/store";
 import { X, ShoppingBag } from "@phosphor-icons/react";
 import Image from "next/image";
+import Link from "next/link";
+import { useDispatch } from "react-redux";
 
 export default function Cart() {
-  // const { showCart, setShowCart, cardItems, totalPrice } = useStateContext();
-  const { dispatch } = useCart();
+  const dispatch = useDispatch<AppDispatch>();
+  const { showCart, cartItems, totalPrice } = useAppSelector(
+    (state) => state.cart
+  );
+
   const handleToggleCart = () => {
-    dispatch({ type: "TOGGLE_CART" });
+    dispatch(toggleCart());
   };
   const handleRemoveItem = (id: number) => {
-    dispatch({ type: "REMOVE_FROM_CART", payload: id });
+    dispatch(deleteFromCart(id));
   };
-  const { showCart, cartItems, totalPrice } = useCart().state;
   return (
     <>
       {showCart && (
@@ -101,9 +110,11 @@ export default function Cart() {
                 </div>
                 {/* Checkout section */}
                 <div className="flex justify-center items-center px-3 py-2">
-                  <button className="border border-primary-400 bg-secondary-500 hover:bg-secondary-600 active:bg-secondary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50 rounded-lg text-slate-50 font-semibold px-8 py-2 shadow-lg transition duration-200 ease-in-out transform hover:scale-105">
-                    Thanh toán
-                  </button>
+                  <Link href="/checkout">
+                    <button className="border border-primary-400 bg-secondary-500 hover:bg-secondary-600 active:bg-secondary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50 rounded-lg text-slate-50 font-semibold px-8 py-2 shadow-lg transition duration-200 ease-in-out transform hover:scale-105">
+                      Thanh toán
+                    </button>
+                  </Link>
                 </div>
               </div>
             </div>

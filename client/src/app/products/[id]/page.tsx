@@ -8,7 +8,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getProductById } from "@/api/products";
 import { IProduct } from "@/interfaces/productInterface";
-import { useCart } from "@/contexts/cartContext";
+// import { useCart } from "@/contexts/cartContext";
 export default function Page() {
   // Get product id from url
   const [product, setProduct] = useState<IProduct>();

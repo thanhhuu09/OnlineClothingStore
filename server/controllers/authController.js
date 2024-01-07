@@ -127,24 +127,20 @@ const authController = {
               .status(403)
               .json({ error: "Forbidden. Invalid refresh token" });
           }
-          // Check if refresh token exists in database
-          const refreshToken = await RefreshToken.findOne({
+          // If refresh token is valid, delete it from database
+          const deletedRefreshToken = await RefreshToken.findOneAndDelete({
             userId: user.id,
             refreshToken: oldRefreshToken,
           });
-          if (!refreshToken) {
-            return res
-              .status(403)
-              .json({ error: "Token not found in database" });
+          if (!deletedRefreshToken) {
+            return res.status(403).json({
+              error: "Forbidden. Not found refresh token in database",
+            });
           }
           // Generate new access token, refresh token
           const accessToken = tokenService.generateAccessToken(user);
           const newRefreshToken = tokenService.generateRefreshToken(user);
-          // Update refresh token in database: delete old refresh token, save new refresh token
-          await RefreshToken.deleteOne({
-            refreshToken: oldRefreshToken,
-            userId: user.id,
-          });
+          // Save new refresh token to database
           const newRefreshTokenDoc = new RefreshToken({
             userId: user.id,
             refreshToken: newRefreshToken,

@@ -1,6 +1,4 @@
-import { IProduct } from "./productInterface";
-
-interface ICart {
+interface ICartItem {
   id: number;
   title: string;
   price: number;
@@ -12,17 +10,10 @@ interface ICart {
 
 interface ICartState {
   showCart: boolean;
-  cartItems: ICart[];
-  totalPrice: number;
+  cartItems: ICartItem[];
   quantity: number;
+  totalPrice: number;
   totalQuantities: number;
 }
 
-type CartActionType =
-  | { type: "ADD_TO_CART"; payload: IProduct }
-  | { type: "REMOVE_FROM_CART"; payload: number }
-  | { type: "INCREASE_QUANTITY"; payload: number }
-  | { type: "DECREASE_QUANTITY"; payload: number }
-  | { type: "TOGGLE_CART" };
-
-export type { ICart, ICartState, CartActionType };
+export type { ICartState, ICartItem };

@@ -1,8 +1,11 @@
-import VoucherSection from "./VoucherSection";
+import { useAppSelector } from "@/redux/store";
 
 export default function TotalPriceTable() {
+  const { totalPrice } = useAppSelector((state) => state.cart);
+  const shipFee = 30000;
+
   return (
-    <div className="col-span-1 mx-auto ">
+    <div>
       {/* Total price section*/}
       <table className="border w-96 bg-white shadow-md">
         <thead>
@@ -15,7 +18,9 @@ export default function TotalPriceTable() {
         <tbody>
           <tr>
             <td className="py-2 px-4">Tổng giỏ hàng</td>
-            <td className="py-2 px-4 text-right">100.000 VNĐ</td>
+            <td className="py-2 px-4 text-right">
+              {Math.round(totalPrice)} VNĐ
+            </td>
           </tr>
           <tr>
             <td className="py-2 px-4">Giảm giá</td>
@@ -23,18 +28,20 @@ export default function TotalPriceTable() {
           </tr>
           <tr>
             <td className="py-2 px-4">Phí vận chuyển</td>
-            <td className="py-2 px-4 text-right">30.000 VNĐ</td>
+            <td className="py-2 px-4 text-right">
+              {shipFee.toLocaleString("vi-VN")} VNĐ
+            </td>
           </tr>
         </tbody>
         <tfoot className="border-t">
           <tr>
             <td className="py-2 px-4 font-semibold">Tổng thanh toán</td>
-            <td className="py-2 px-4 font-semibold text-right">130.000 VNĐ</td>
+            <td className="py-2 px-4 font-semibold text-right">
+              {Math.round(totalPrice + shipFee).toLocaleString("vi-VN")} VNĐ
+            </td>
           </tr>
         </tfoot>
       </table>
-      {/* Voucher section */}
-      <VoucherSection />
     </div>
   );
 }

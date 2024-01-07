@@ -1,21 +1,22 @@
 "use client";
 import Image from "next/image";
-import Link from "next/link";
 import { IProduct } from "@/interfaces/productInterface";
-import { Heart, Eye, Star, ShoppingCart } from "@phosphor-icons/react";
+import { Eye } from "@phosphor-icons/react";
 import { Rating } from "@mui/material";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useCart } from "@/contexts/cartContext";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { addToCart } from "@/redux/features/cartSlice";
 
 interface ProductCardProps {
   product: IProduct;
 }
 // Product Card Component
 export default function ProductCard({ product }: ProductCardProps) {
-  const { dispatch } = useCart();
+  const dispatch = useDispatch<AppDispatch>();
   const addToCartHandler = () => {
-    dispatch({ type: "ADD_TO_CART", payload: product });
+    dispatch(addToCart(product));
   };
   const [isDragging, setIsDragging] = useState(false);
   const router = useRouter();

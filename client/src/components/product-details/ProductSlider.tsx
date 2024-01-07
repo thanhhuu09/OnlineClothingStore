@@ -5,7 +5,6 @@ import ImageModal from "./ImageModal";
 
 export default function ProductSlider({ images }: { images: string[] }) {
   const [activeSlide, setActiveSlide] = useState<number>(0);
-  console.log(activeSlide);
 
   const mainSettings = {
     dot: false,

@@ -1,96 +1,136 @@
 import { useEffect, useState } from "react";
-interface IProvince {
+import FormInput from "../FormInput";
+import FormSelect from "../FormSelect";
+import { IDistrict, IProvince } from "@/interfaces/cityInterface";
+import CityService from "@/services/CityService";
+interface IFormCustomerInfo {
   name: string;
-  code: number;
+  phone: string;
+  email: string;
+  address: string;
+  note: string;
+  [key: string]: string; // Allow any other properties
 }
-interface IDistrict {
-  name: string;
-  province_code: number;
+interface IErrors extends IFormCustomerInfo {
+  [key: string]: string; // Allow any other properties
 }
+interface CustomerInfoProps {
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+}
+const inputs = [
+  {
+    type: "text",
+    placeholder: "Họ và tên (*)",
+    required: true,
+    name: "name",
+  },
+  {
+    type: "text",
+    placeholder: "Điện thoại (*)",
+    required: true,
+    name: "phone",
+  },
+  {
+    type: "text",
+    placeholder: "Email",
+    required: false,
+    name: "email",
+  },
+  {
+    type: "text",
+    placeholder: "Địa chỉ (*)",
+    required: true,
+    name: "address",
+  },
+  {
+    type: "text",
+    placeholder: "Ghi chú",
+    required: false,
+    name: "note",
+  },
+];
 
-export default function CustomerInfo() {
+export default function CustomerInfo({ onSubmit }: CustomerInfoProps) {
+  // Define state variables for provinces, districts, and selected province and district
   const [provinces, setProvinces] = useState<IProvince[]>([]);
   const [districts, setDistricts] = useState<IDistrict[]>([]);
   const [selectedProvince, setSelectedProvince] = useState<
     IProvince | undefined
   >(undefined);
+  const [selectedDistrict, setSelectedDistrict] = useState<
+    IDistrict | undefined
+  >(undefined);
+  // Fetch provinces and districts
   useEffect(() => {
-    const fetchCity = async () => {
-      const res = await fetch("https://provinces.open-api.vn/api/");
-      const data = await res.json();
-      const provinces = data.map((province: IProvince) => ({
-        name: province.name,
-        code: province.code,
-      }));
+    const fetchCityData = async () => {
+      const provinces = await CityService.fetchProvinces();
       setProvinces(provinces);
+
+      if (selectedProvince) {
+        const districts = await CityService.fetchDistricts(
+          selectedProvince.code
+        );
+        setDistricts(districts);
+      }
     };
-    const fetchDistrict = async () => {
-      const res = await fetch("https://provinces.open-api.vn/api/d/");
-      const data = await res.json();
-      const districts = data.filter((district: IDistrict) => {
-        return district.province_code === selectedProvince?.code;
-      });
-      setDistricts(districts);
-    };
-    fetchCity();
-    fetchDistrict();
+    fetchCityData();
   }, [selectedProvince]);
 
-  const handleProvinceChange = (e: any) => {
+  // Handle province change
+  const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedProvince = provinces.find(
       (province) => province.name === e.target.value
     );
     setSelectedProvince(selectedProvince);
   };
 
+  // Handle district change
+  const handleDistrictChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedDistrict = districts.find(
+      (district) => district.name === e.target.value
+    );
+    setSelectedDistrict(selectedDistrict);
+  };
+
   return (
-    <div className="w-fit">
+    <div className="w-full">
       <h2 className="uppercase text-lg mb-4">Thông tin khách hàng</h2>
-      <input
-        className="w-full p-2 border rounded-lg mb-2 focus:ring-1 focus:outline-none"
-        type="text"
-        placeholder="Họ và tên (*)"
-        required
-      />
-      <input
-        className="w-full p-2 border rounded-lg mb-2 focus:ring-1 focus:outline-none"
-        type="text"
-        placeholder="Điện thoại (*)"
-        required
-      />
-      <input
-        className="w-full p-2 border rounded-lg mb-2 focus:ring-1 focus:outline-none"
-        type="text"
-        placeholder="Email"
-      />
-      <input
-        className="w-full p-2 border rounded-lg mb-2 focus:ring-1 focus:outline-none"
-        type="text"
-        placeholder="Địa chỉ (*)"
-        required
-      />
-      <input
-        className="w-full p-2 border rounded-lg mb-2 focus:ring-1 focus:outline-none"
-        type="text"
-        placeholder="Ghi chú"
-      />
-      <select
-        className="w-full p-2 border rounded-lg mb-2 focus:ring-1 focus:outline-none"
+      {inputs.map((input, index) => (
+        <FormInput
+          key={index}
+          errorMessages=""
+          id={input.name}
+          name={input.name}
+          onChange={() => {}}
+          placeholder={input.placeholder}
+          type={input.type}
+          value="" // form.name, form.phone, form.email, form.address, form.note
+        />
+      ))}
+      <FormSelect
+        id="province"
+        name="province"
+        value={selectedProvince?.name || "Tỉnh/Thành phố"}
         onChange={handleProvinceChange}
-      >
-        <option selected>Tỉnh/Thành phố</option>
-        {provinces.map((province: IProvince, index) => (
-          <option key={index} value={province.name}>
-            {province.name}
-          </option>
-        ))}
-      </select>
-      <select className="w-full p-2 border rounded-lg mb-2 focus:ring-1 focus:outline-none">
-        <option selected>Quận/Huyện</option>
-        {districts.map((district: IDistrict, index) => (
-          <option key={index}>{district.name}</option>
-        ))}
-      </select>
+        options={provinces.map((province: IProvince) => ({
+          value: province.name,
+          label: province.name,
+        }))}
+        placeholder="Tỉnh/Thành phố"
+        errorMessages=""
+      />
+      <FormSelect
+        id="district"
+        name="district"
+        onChange={handleDistrictChange}
+        options={districts.map((district: IDistrict) => ({
+          value: district.name,
+          label: district.name,
+        }))}
+        placeholder="Quận/Huyện"
+        errorMessages=""
+        value={selectedDistrict?.name || "Quận/Huyện"}
+      />
     </div>
   );
 }

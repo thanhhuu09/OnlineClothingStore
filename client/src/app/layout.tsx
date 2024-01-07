@@ -1,12 +1,7 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/navbar/Navbar";
-import Footer from "@/components/Footer";
-const inter = Inter({ subsets: ["latin"] });
-import Cart from "@/components/cart/Cart";
-import ReduxProvider from "@/redux/provider";
-import RouteChangeListener from "./route-change-listener";
+
+import App from "./App";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -21,15 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans max-w-screen-2xl mx-auto box-border">
-        <ReduxProvider>
-          <RouteChangeListener />
-          <Navbar />
-          <div>
-            <Cart />
-            {children}
-          </div>
-          <Footer />
-        </ReduxProvider>
+        <App>{children}</App>
       </body>
     </html>
   );

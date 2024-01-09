@@ -9,11 +9,19 @@ import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "@/redux/store";
 import { toggleCart } from "@/redux/features/cartSlice";
 import { User } from "@phosphor-icons/react/dist/ssr";
+import userService from "@/services/userService";
+import { useRouter } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
 
 export default function Navbar() {
   const [isSidebarOpen, setSidebarOpen] = useState<boolean>(false);
+  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+
   const { totalQuantities } = useAppSelector((state) => state.cart);
+  const accessToken = useAppSelector(
+    (state) => state.auth.login.currentUser?.accessToken
+  );
   const currentUser = useAppSelector(
     (state) => state.auth.login.currentUser?.userInfo
   );
@@ -26,8 +34,29 @@ export default function Navbar() {
   const handleToggleCart = () => {
     dispatch(toggleCart());
   };
+  const handleLogout = async () => {
+    // Decoded JWT token to know when it will be expired
+    if (accessToken) {
+      const decodedToken: any = jwtDecode(accessToken);
+      const expiredAt = decodedToken.exp;
+      const currentTime = Date.now() / 1000; // Convert to seconds
+      if (currentTime > expiredAt) {
+        try {
+          const newAccessToken = await userService.createNewAccessToken();
+          await userService.logout(dispatch, router, newAccessToken);
+          return;
+        } catch (error) {
+          console.log("Error refreshing access token:", error);
+        }
+      }
+      await userService.logout(dispatch, router, accessToken);
+    }
+  };
+  //
   return (
     <nav className="bg-white sticky w-full z-20 top-0 left-0 border-b-slate-600">
+      {/* Count from express session */}
+      <h1>{}</h1>
       <div className="flex justify-between items-center px-12 py-2">
         <button className="md:hidden" onClick={() => setSidebarOpen(true)}>
           <List size={24} color="black" />
@@ -89,7 +118,7 @@ export default function Navbar() {
                         <Link href="/orders">Đơn hàng</Link>
                       </li>
                       <li className="hover:bg-gray-100 px-4 py-2">
-                        <Link href="/auth/logout">Đăng xuất</Link>
+                        <button onClick={handleLogout}>Đăng xuất</button>
                       </li>
                     </ul>
                   </>

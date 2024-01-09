@@ -1,8 +1,12 @@
+// File này call api để login, register, logout
+
 import { IUserLogin, IUserRegister } from "@/interfaces/userInterface";
 import {
   loginFailure,
   loginRequest,
   loginSuccess,
+  logoutRequest,
+  logoutSuccess,
   registerFailure,
   registerRequest,
   registerSuccess,
@@ -64,6 +68,46 @@ const userService = {
     } catch (error) {
       dispatch(registerFailure());
       return false;
+    }
+  },
+  logout: async (
+    dispatch: AppDispatch,
+    router: AppRouterInstance,
+    accessToken: string
+  ) => {
+    dispatch(logoutRequest());
+    try {
+      const response = await fetch("/api/v1/auth/logout", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (response.ok) {
+        dispatch(logoutSuccess());
+        router.push("/");
+      } else {
+        dispatch(loginFailure());
+      }
+    } catch (error) {
+      dispatch(loginFailure());
+    }
+  },
+  // Create new access token from refresh token
+  createNewAccessToken: async () => {
+    try {
+      // Get old refresh token from httpOnly cookie
+      const response = await fetch("/api/v1/auth/refresh-token", {
+        method: "POST",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        return data.accessToken;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      return null;
     }
   },
 };

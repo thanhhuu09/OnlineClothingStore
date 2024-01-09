@@ -1,25 +1,13 @@
 "use client";
-import ReduxProvider from "@/redux/provider";
-import { PersistGate } from "redux-persist/lib/integration/react";
-import RouteChangeListener from "./route-change-listener";
-import { persistor } from "@/redux/store";
-import Navbar from "@/components/navbar/Navbar";
-import Cart from "@/components/cart/Cart";
-import Footer from "@/components/Footer";
+import { usePathname } from "next/navigation";
+import AdminLayout from "./AdminLayout";
+import CustomerLayout from "./CustomerLayout";
 
-// App Component
 export default function App({ children }: { children: React.ReactNode }) {
-  return (
-    <ReduxProvider>
-      <PersistGate loading={null} persistor={persistor}>
-        <RouteChangeListener />
-        <Navbar />
-        <div>
-          <Cart />
-          {children}
-        </div>
-        <Footer />
-      </PersistGate>
-    </ReduxProvider>
-  );
+  const pathname = usePathname();
+  if (pathname.startsWith("/dashboard")) {
+    return <AdminLayout>{children}</AdminLayout>;
+  } else {
+    return <CustomerLayout>{children}</CustomerLayout>;
+  }
 }

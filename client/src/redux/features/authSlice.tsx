@@ -25,6 +25,10 @@ interface IAuthState {
     isFetching: boolean;
     error: boolean;
   };
+  logout: {
+    isFetching: boolean;
+    error: boolean;
+  };
 }
 const initialState: IAuthState = {
   login: {
@@ -33,6 +37,10 @@ const initialState: IAuthState = {
     error: false,
   },
   register: {
+    isFetching: false,
+    error: false,
+  },
+  logout: {
     isFetching: false,
     error: false,
   },
@@ -67,6 +75,20 @@ const authSlice = createSlice({
       state.register.isFetching = false;
       state.register.error = true;
     },
+    // Logout
+    logoutRequest: (state) => {
+      state.logout.isFetching = true;
+      state.logout.error = false;
+    },
+    logoutSuccess: (state) => {
+      state.logout.isFetching = false;
+      state.logout.error = false;
+      state.login.currentUser = null;
+    },
+    logoutFailure: (state) => {
+      state.logout.isFetching = false;
+      state.logout.error = true;
+    },
   },
 });
 
@@ -77,5 +99,8 @@ export const {
   registerFailure,
   registerRequest,
   registerSuccess,
+  logoutRequest,
+  logoutSuccess,
+  logoutFailure,
 } = authSlice.actions;
 export default authSlice.reducer;

@@ -6,7 +6,7 @@ import { Rating } from "@mui/material";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
+import { AppDispatch, useAppSelector } from "@/redux/store";
 import { addToCart } from "@/redux/features/cartSlice";
 
 interface ProductCardProps {
@@ -15,7 +15,13 @@ interface ProductCardProps {
 // Product Card Component
 export default function ProductCard({ product }: ProductCardProps) {
   const dispatch = useDispatch<AppDispatch>();
+  const { currentUser } = useAppSelector((state) => state.auth.login);
   const addToCartHandler = () => {
+    // Check if user is logged in, if not, redirect to login page
+    if (!currentUser) {
+      router.push("/auth/login");
+      return;
+    }
     dispatch(addToCart(product));
   };
   const [isDragging, setIsDragging] = useState(false);

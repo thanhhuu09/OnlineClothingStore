@@ -1,4 +1,5 @@
 import Card from "@/components/Dashboard/Card/Card";
+import Transactions from "@/components/Dashboard/Transactions/Transactions";
 // Dummy data
 const cards = [
   {
@@ -23,12 +24,13 @@ const cards = [
 // Main dashboard page
 export default function Page() {
   return (
-    <div>
+    <div className="flex flex-col gap-5">
       <div className="flex gap-5">
         {cards.map((card) => (
           <Card key={card.id} item={card} />
         ))}
       </div>
+      <Transactions />
     </div>
   );
 }

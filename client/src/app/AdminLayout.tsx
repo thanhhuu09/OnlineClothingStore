@@ -11,7 +11,7 @@ export default function AdminLayout({
       <aside className="basis-1/4 ">
         <Sidebar />
       </aside>
-      <div className="basis-full p-4">
+      <div className="basis-full p-4 flex flex-col gap-4">
         <nav>
           <Navbar />
         </nav>

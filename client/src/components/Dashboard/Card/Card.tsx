@@ -18,12 +18,14 @@ export default function Card({ item }: CardProps) {
         <p className="text-2xl font-semibold">{item.number}</p>
         <p>
           {item.change > 0 ? (
-            <span className="text-green-500 flex items-center">
-              <ArrowUp /> {item.change}%
+            <span className="flex items-center text-green-500">
+              <ArrowUp />
+              <span className="">{item.change}% so với tuần trước</span>
             </span>
           ) : (
             <span className="text-red-500 flex items-center">
-              <ArrowDown /> {item.change}%
+              <ArrowDown />
+              <span className="">{item.change}% so với tuần trước</span>
             </span>
           )}
         </p>

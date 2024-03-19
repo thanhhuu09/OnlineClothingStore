@@ -131,6 +131,30 @@ const deleteItemFromCart = async (req, res) => {
   }
 };
 
+// Delete all items from cart
+// DELETE /api/v1/carts/:userId/items
+const deleteAllItemsFromCart = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const userCart = await Cart.findOne({ userId });
+    if (!userCart) {
+      return res.status(400).json({ msg: "Cart does not exist." });
+    }
+    // remove all items from cart
+    userCart.cartItems = [];
+    userCart.totalPrice = 0;
+    await userCart.save();
+    return res
+      .status(200)
+      .json({
+        msg: "All items deleted from cart successfully",
+        data: userCart,
+      });
+  } catch (error) {
+    return res.status(500).json({ msg: error.message });
+  }
+};
+
 // Get user cart - GET /api/v1/carts/:userId
 // Admin can get any user's cart, user can only get their own cart
 const getUserCart = async (req, res) => {
@@ -142,6 +166,8 @@ const getUserCart = async (req, res) => {
     if (!userCart) {
       return res.status(400).json({ msg: "Cart does not exist." });
     }
+    // Save cart to session
+    req.session.cart = userCart;
     return res
       .status(200)
       .json({ msg: "Get user cart successfully", data: userCart });
@@ -211,5 +237,6 @@ module.exports = {
 // - POST /api/v1/carts
 // - PUT /api/v1/carts/:userId/items/:itemId
 // - DELETE /api/v1/carts/:userId/items/:itemId
+// - DELETE /api/v1/carts/:userId/items
 // - GET /api/v1/carts/:userId
 // - POST /api/v1/carts/checkout

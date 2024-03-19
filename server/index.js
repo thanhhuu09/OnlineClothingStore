@@ -4,12 +4,31 @@ const morgan = require("morgan");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
-
+const session = require("express-session");
+const MongoStore = require("connect-mongo"); // Used to store sessions in MongoDB
 require("dotenv").config();
 
 app.use(cookieParser());
+
+// Session middleware
+app.use(
+  session({
+    secret: "secret",
+    store: MongoStore.create({
+      mongoUrl: process.env.CONNECTION_STRING,
+      collectionName: "sessions",
+    }),
+    cookie: { maxAge: 60000 },
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 app.use(express.json()); // Used to parse JSON bodies
-app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+); //Parse URL-encoded bodies
 
 // morgan is a middleware that logs HTTP requests
 app.use(morgan("dev"));
@@ -31,7 +50,6 @@ const userRoutes = require("./routes/user");
 const cartRoutes = require("./routes/cart");
 const voucherRoutes = require("./routes/voucher");
 const orderRoutes = require("./routes/order");
-
 // Use routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/products", productRoutes);
@@ -40,7 +58,6 @@ app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/carts", cartRoutes);
 app.use("/api/v1/vouchers", voucherRoutes);
 app.use("/api/v1/orders", orderRoutes);
-
 // Payment Routes
 app.use("/api/v1/payment", require("./paymentGateway/paymentRoutes"));
 // Start server

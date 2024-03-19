@@ -85,9 +85,9 @@ const authController = {
         secure: false, // If using HTTPS, set this to true
         sameSite: "strict", // Only allow cookies to be sent with requests from the same site
       });
+
       // Exclude password from user info
       const { password: _, ...userInfo } = user.toObject();
-
       return res.status(200).json({
         msg: "Login successfully",
         data: { userInfo, accessToken },
@@ -101,7 +101,10 @@ const authController = {
   // LOGOUT A USER
   logout: async (req, res) => {
     try {
+      // clear refresh token from httpOnly cookie
       res.clearCookie("refreshToken");
+      // delete refresh token from database
+      // await RefreshToken.findOneAndDelete({ userId: req.user.id });
       return res.status(200).json({ msg: "Logout successfully" });
     } catch (error) {
       console.error("Error logging out user:", error);

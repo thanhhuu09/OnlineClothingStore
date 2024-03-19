@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 // Verify token JWT
 const verifyToken = async (req, res, next) => {
   try {
+    // get auth header
     const authHeader = req.headers.authorization;
     // check if auth header exists
     if (!authHeader) {

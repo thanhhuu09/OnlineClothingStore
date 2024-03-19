@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import FormInput from "../FormInput";
 import FormSelect from "../FormSelect";
 import { IDistrict, IProvince } from "@/interfaces/cityInterface";
-import CityService from "@/services/CityService";
+import CityService from "@/services/cityService";
 interface IFormCustomerInfo {
   name: string;
   phone: string;
@@ -23,34 +23,47 @@ const inputs = [
     placeholder: "Họ và tên (*)",
     required: true,
     name: "name",
+    value: "",
   },
   {
     type: "text",
     placeholder: "Điện thoại (*)",
     required: true,
     name: "phone",
+    value: "",
   },
   {
     type: "text",
     placeholder: "Email",
     required: false,
     name: "email",
+    value: "",
   },
   {
     type: "text",
     placeholder: "Địa chỉ (*)",
     required: true,
     name: "address",
+    value: "",
   },
   {
     type: "text",
     placeholder: "Ghi chú",
     required: false,
     name: "note",
+    value: "",
   },
 ];
 
-export default function CustomerInfo({ onSubmit }: CustomerInfoProps) {
+export default function CustomerInfo() {
+  const [form, setForm] = useState<IFormCustomerInfo>({
+    name: "",
+    phone: "",
+    email: "",
+    address: "",
+    note: "",
+  });
+
   // Define state variables for provinces, districts, and selected province and district
   const [provinces, setProvinces] = useState<IProvince[]>([]);
   const [districts, setDistricts] = useState<IDistrict[]>([]);
@@ -68,7 +81,7 @@ export default function CustomerInfo({ onSubmit }: CustomerInfoProps) {
 
       if (selectedProvince) {
         const districts = await CityService.fetchDistricts(
-          selectedProvince.code
+          selectedProvince.province_id
         );
         setDistricts(districts);
       }
@@ -79,7 +92,7 @@ export default function CustomerInfo({ onSubmit }: CustomerInfoProps) {
   // Handle province change
   const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedProvince = provinces.find(
-      (province) => province.name === e.target.value
+      (province) => province.province_name === e.target.value
     );
     setSelectedProvince(selectedProvince);
   };
@@ -87,9 +100,13 @@ export default function CustomerInfo({ onSubmit }: CustomerInfoProps) {
   // Handle district change
   const handleDistrictChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedDistrict = districts.find(
-      (district) => district.name === e.target.value
+      (district) => district.district_name === e.target.value
     );
     setSelectedDistrict(selectedDistrict);
+  };
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
   };
 
   return (
@@ -101,20 +118,20 @@ export default function CustomerInfo({ onSubmit }: CustomerInfoProps) {
           errorMessages=""
           id={input.name}
           name={input.name}
-          onChange={() => {}}
+          onChange={handleInputChange}
           placeholder={input.placeholder}
           type={input.type}
-          value="" // form.name, form.phone, form.email, form.address, form.note
+          value={form[input.name]}
         />
       ))}
       <FormSelect
         id="province"
         name="province"
-        value={selectedProvince?.name || "Tỉnh/Thành phố"}
+        value={selectedProvince?.province_name || "Tỉnh/Thành phố"}
         onChange={handleProvinceChange}
         options={provinces.map((province: IProvince) => ({
-          value: province.name,
-          label: province.name,
+          value: province.province_name,
+          label: province.province_name,
         }))}
         placeholder="Tỉnh/Thành phố"
         errorMessages=""
@@ -124,12 +141,12 @@ export default function CustomerInfo({ onSubmit }: CustomerInfoProps) {
         name="district"
         onChange={handleDistrictChange}
         options={districts.map((district: IDistrict) => ({
-          value: district.name,
-          label: district.name,
+          value: district.district_name,
+          label: district.district_name,
         }))}
         placeholder="Quận/Huyện"
         errorMessages=""
-        value={selectedDistrict?.name || "Quận/Huyện"}
+        value={selectedDistrict?.district_name || "Quận/Huyện"}
       />
     </div>
   );

@@ -1,6 +1,6 @@
 import { MagnifyingGlass } from "@phosphor-icons/react";
 
-export default function Search() {
+export default function Search({ placeholder }: { placeholder: string }) {
   return (
     <form>
       <label
@@ -12,7 +12,7 @@ export default function Search() {
           id="search"
           type="text"
           autoComplete="off"
-          placeholder="Search"
+          placeholder={placeholder}
           className="bg-slate-700 border-none focus:outline-none"
         />
       </label>

@@ -1,10 +1,10 @@
 interface IProvince {
-  name: string;
-  code: number;
+  province_name: string;
+  province_id: number;
 }
 interface IDistrict {
-  name: string;
-  province_code: number;
+  district_name: string;
+  district_id: number;
 }
 
 export type { IProvince, IDistrict };

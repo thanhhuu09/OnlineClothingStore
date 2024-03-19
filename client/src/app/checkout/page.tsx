@@ -12,7 +12,6 @@ export default function Page() {
 
   const handleSubmitOrder = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(e);
   };
   return (
     <div
@@ -37,7 +36,7 @@ export default function Page() {
             </div>
             {/* Information section of customer */}
             <div className="grid grid-cols-2 gap-9 px-12 py-6 mt-9 bg-white shadow-md">
-              <CustomerInfo onSubmit={handleSubmitOrder} />
+              <CustomerInfo />
               <PaymentMethod />
             </div>
             <button

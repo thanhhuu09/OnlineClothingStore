@@ -1,6 +1,8 @@
 // Product Routes
 const authenticationMiddleware = require("../middleware/authenticationMiddleware");
 const router = require("express").Router();
+const upload = require("../middleware/multer");
+
 const {
   getAllProducts,
   getProductById,
@@ -13,12 +15,13 @@ router.get("/", getAllProducts);
 router.get("/:id", getProductById);
 router.post(
   "/",
-  authenticationMiddleware.verifyTokenAndAdminAuth,
+  // authenticationMiddleware.verifyTokenAndAdminAuth,
+  upload.array("images", 5), // Upload multiple images - 5 images max
   createProduct
 );
 router.delete(
   "/:id",
-  authenticationMiddleware.verifyTokenAndAdminAuth,
+  // authenticationMiddleware.verifyTokenAndAdminAuth,
   deleteProduct
 );
 router.put(

@@ -3,7 +3,7 @@ import ReduxProvider from "@/redux/provider";
 import { PersistGate } from "redux-persist/lib/integration/react";
 import RouteChangeListener from "./route-change-listener";
 import { persistor } from "@/redux/store";
-import Navbar from "@/components/navbar/Navbar";
+import Navbar from "@/components/layout/navbar";
 import Cart from "@/components/cart/Cart";
 import Footer from "@/components/Footer";
 
@@ -15,13 +15,11 @@ export default function CustomerLayout({
 }) {
   return (
     <ReduxProvider>
-      <PersistGate loading={null} persistor={persistor}>
-        <RouteChangeListener />
-        <Navbar />
-        <Cart />
-        {children}
-        <Footer />
-      </PersistGate>
+      <RouteChangeListener />
+      <Navbar />
+      <Cart />
+      {children}
+      <Footer />
     </ReduxProvider>
   );
 }

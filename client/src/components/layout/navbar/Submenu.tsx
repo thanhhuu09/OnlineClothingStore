@@ -27,7 +27,7 @@ function Submenu({
       </button>
       <div
         onMouseLeave={closeSubmenu}
-        className={`absolute shadow-md bg-white w-full inset-x-0 mt-4 flex items-center justify-center  
+        className={`absolute shadow-md bg-white w-full inset-x-0 mt-6 flex items-center justify-center  
           origin-top transition ease-in-out duration-500 ${submenuClasses}`}
       >
         <ul

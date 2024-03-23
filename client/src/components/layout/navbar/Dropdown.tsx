@@ -16,7 +16,7 @@ export default function Dropdown({
     <>
       <button
         onClick={toggleDropdown}
-        className="flex items-center w-full justify-between"
+        className="flex items-center justify-between w-full"
       >
         <span className="uppercase">{label}</span>
         <CaretDown

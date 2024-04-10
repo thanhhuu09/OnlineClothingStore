@@ -50,8 +50,7 @@ const authController = {
   // LOGIN A USER
   login: async (req, res) => {
     try {
-      const { email, password } = req.body;
-
+      const { email, password, remember } = req.body;
       // Find user by email
       const user = await User.findOne({ email });
       if (!user) {
@@ -63,17 +62,18 @@ const authController = {
       if (!isPasswordValid) {
         return res.status(400).json({ error: "Incorrect password" });
       }
+      const expiresIn = remember ? 7 * 24 * 60 * 60 * 1000 : 15 * 60 * 1000; // 7 days : 15 minutes
 
       // Generate JWT token
       const accessToken = tokenService.generateAccessToken(user);
       // Generate refresh token
-      const refreshToken = tokenService.generateRefreshToken(user);
+      const refreshToken = tokenService.generateRefreshToken(user, expiresIn);
 
       // save refresh token to database
       const newRefreshToken = new RefreshToken({
         userId: user._id,
         refreshToken: refreshToken,
-        expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000, // 7 days
+        expiresAt: Date.now() + expiresIn,
       });
       await newRefreshToken.save();
 
@@ -81,26 +81,32 @@ const authController = {
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         path: "/", // Set cookie to root path
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        expiresIn: new Date(Date.now() + expiresIn),
         secure: false, // If using HTTPS, set this to true
         sameSite: "strict", // Only allow cookies to be sent with requests from the same site
       });
-      // Exclude password from user info
-      const { password: _, ...userInfo } = user.toObject();
-
+      const { password: userPassword, ...userInfo } = user._doc; // Remove password from user info
       return res.status(200).json({
         msg: "Login successfully",
-        data: { userInfo, accessToken },
+        data: { user: userInfo, accessToken },
       });
     } catch (error) {
       console.error("Error logging in user:", error);
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: "Login failed. Please try again." });
     }
   },
 
   // LOGOUT A USER
   logout: async (req, res) => {
     try {
+      // Invalidate refresh token in database
+      const deletedRefreshToken = await RefreshToken.findOneAndDelete({
+        refreshToken: req.cookies.refreshToken,
+      });
+      if (!deletedRefreshToken) {
+        return res.status(400).json({ error: "Invalid refresh token" });
+      }
+      // Clear refresh token from the cookie
       res.clearCookie("refreshToken");
       return res.status(200).json({ msg: "Logout successfully" });
     } catch (error) {
@@ -139,7 +145,10 @@ const authController = {
           }
           // Generate new access token, refresh token
           const accessToken = tokenService.generateAccessToken(user);
-          const newRefreshToken = tokenService.generateRefreshToken(user);
+          const newRefreshToken = tokenService.generateRefreshToken(
+            user,
+            7 * 24 * 60 * 60 * 1000
+          ); // 7 days
           // Save new refresh token to database
           const newRefreshTokenDoc = new RefreshToken({
             userId: user.id,
@@ -150,13 +159,15 @@ const authController = {
           // Save refresh token to httpOnly cookie
           res.cookie("refreshToken", newRefreshToken, {
             httpOnly: true,
-            path: "/", // Set cookie to root path
+            path: "/",
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-            secure: false, // If using HTTPS, set this to true
+            secure: false,
             sameSite: "strict", // Only allow cookies to be sent with requests from the same site
           });
           // Send new access token to client
-          return res.status(200).json({ accessToken });
+          return res
+            .status(200)
+            .json({ accessToken, user, msg: "Token refreshed" });
         }
       );
     } catch (error) {

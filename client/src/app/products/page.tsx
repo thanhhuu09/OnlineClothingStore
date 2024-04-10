@@ -2,7 +2,7 @@
 "use client";
 import { IProduct } from "@/interfaces/productInterface";
 import { getProducts } from "@/api/products";
-import ProductCard from "@/components/ProductCard";
+import ProductCard from "@/components/productCard";
 import Sidebar from "@/components/product-filter/Sidebar";
 import { useEffect, useState } from "react";
 

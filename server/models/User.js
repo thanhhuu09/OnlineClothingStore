@@ -24,6 +24,16 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
     },
+    address: {
+      type: String,
+      default: "",
+    },
+    orders: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Order",
+      },
+    ],
     role: {
       type: String,
       enum: ["user", "admin"],

@@ -1,11 +1,12 @@
 "use client";
 import ReduxProvider from "@/redux/provider";
-import { PersistGate } from "redux-persist/lib/integration/react";
 import RouteChangeListener from "./route-change-listener";
-import { persistor } from "@/redux/store";
 import Navbar from "@/components/layout/navbar";
-import Cart from "@/components/cart/Cart";
-import Footer from "@/components/Footer";
+import Footer from "@/components/layout/footer";
+import { useEffect } from "react";
+import userService from "@/helpers/userHelpers";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
 
 // App Component
 export default function CustomerLayout({
@@ -17,7 +18,6 @@ export default function CustomerLayout({
     <ReduxProvider>
       <RouteChangeListener />
       <Navbar />
-      <Cart />
       {children}
       <Footer />
     </ReduxProvider>

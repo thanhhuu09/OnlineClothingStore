@@ -1,72 +1,51 @@
 // Middleware relate to authentication
 const jwt = require("jsonwebtoken");
+const authController = require("../controllers/authController");
 
-// Verify token JWT
+// Verify token and decode user information
 const verifyToken = async (req, res, next) => {
-  try {
-    const authHeader = req.headers.authorization;
-    // check if auth header exists
-    if (!authHeader) {
-      return res
-        .status(401)
-        .json({ error: "Unauthorized. Missing Authorization header" });
-    }
-    // check if token exists
-    const token = authHeader && authHeader.split(" ")[1];
-    if (!token) {
-      return res
-        .status(401)
-        .json({ error: "Unauthorized. Token not provided" });
-    }
-    // verify token
-    jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err, decoded) => {
-      if (err) {
-        return res
-          .status(403)
-          .json({ error: "Forbidden. Invalid or expired token" });
-      }
-      req.user = decoded;
-      next();
-    });
-  } catch (error) {
-    console.error("Error authenticating token:", error);
-    res.status(500).json({ error: "Internal server error" });
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res
+      .status(401)
+      .json({ error: "Unauthorized. Missing Authorization header" });
   }
-};
-
-// Verify if user is admin
-const verifyTokenAndAdminAuth = (req, res, next) => {
-  verifyToken(req, res, () => {
-    if (req.user.role === "admin") {
-      next();
-    } else {
-      return res.status(403).json({ error: "Forbidden" });
+  const token = authHeader.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ error: "Unauthorized. Token not found" });
+  }
+  jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err, decoded) => {
+    if (err) {
+      return res
+        .status(403)
+        .json({ error: "Forbidden. Invalid or expired token" });
     }
+    req.user = decoded;
+    next();
   });
 };
 
-// Verify if user is admin or user owns the account
-const verifyTokenAndAuth = (req, res, next) => {
-  verifyToken(req, res, () => {
-    const { role, id } = req.user; // user id and role from token
-    const { params } = req; // user id from params
-    const { body } = req; // user id from body
+const verifyAdmin = (req, res, next) => {
+  if (req.user.role !== "admin") {
+    return res
+      .status(403)
+      .json({ error: "Forbidden. Admin permission required" });
+  }
+  next();
+};
 
-    if (role === "admin" || id === params.userId || id === body.userId) {
-      req.user = { id, role };
-      next();
-    } else {
-      console.error("Unauthorized access: Forbidden");
-      const errorMessage =
-        role === "admin"
-          ? "Forbidden. Admin permission required."
-          : "Forbidden. User does not own the account.";
-      return res.status(403).json({ error: errorMessage });
-    }
-  });
+const verifyUser = (req, res, next) => {
+  const { role, id } = req.user;
+  const { params, body } = req;
+  if (role !== "admin" && id != params.userId && id != body.userId) {
+    return res.status(403).json({ error: "Forbidden. Permission denied" });
+  }
+  next();
 };
 module.exports = {
   verifyToken,
-  verifyTokenAndAdminAuth,
-  verifyTokenAndAuth,
+  verifyAdmin,
+  verifyUser,
+  verifyTokenAndAdminAuth: [verifyToken, verifyAdmin],
+  verifyTokenAndAuth: [verifyToken, verifyUser],
 };

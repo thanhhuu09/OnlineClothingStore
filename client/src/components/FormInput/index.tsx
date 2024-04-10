@@ -2,8 +2,6 @@ interface FormInputProps {
   id: string;
   type: string;
   name: string;
-  value: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder: string;
   label?: string;
   errorMessages: string;
@@ -32,8 +30,6 @@ export default function FormInput(props: FormInputProps) {
         id={props.id}
         type={props.type}
         name={props.name}
-        value={props.value}
-        onChange={props.onChange}
         placeholder={props.placeholder}
         disabled={false}
         required

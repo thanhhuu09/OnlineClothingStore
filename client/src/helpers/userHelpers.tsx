@@ -1,5 +1,4 @@
 // File này call api để login, register, logout
-
 import { IUserLogin, IUserRegister } from "@/interfaces/userInterface";
 import {
   loginFailure,
@@ -15,7 +14,23 @@ import { AppDispatch } from "@/redux/store";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 // User service: use to call api related to user
-const userService = {
+const userHelpers = {
+  getAccessToken: async () => {
+    // Get access token from httpOnly cookie
+    try {
+      const response = await fetch("/api/v1/auth/refresh", {
+        method: "POST",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to get access token");
+      }
+      const data = await response.json();
+      return data.accessToken;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  },
   login: async (
     user: IUserLogin,
     dispatch: AppDispatch,
@@ -83,33 +98,49 @@ const userService = {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      if (response.ok) {
-        dispatch(logoutSuccess());
-        router.push("/");
-      } else {
-        dispatch(loginFailure());
+      if (!response.ok) {
+        throw new Error("Failed to logout");
       }
+      dispatch(logoutSuccess());
+      router.push("/");
     } catch (error) {
+      console.log(error);
       dispatch(loginFailure());
     }
   },
-  // Create new access token from refresh token
-  createNewAccessToken: async () => {
+  // get user by id through refresh token
+  getUserById: async (dispatch: AppDispatch) => {
+    dispatch(loginRequest());
     try {
-      // Get old refresh token from httpOnly cookie
-      const response = await fetch("/api/v1/auth/refresh-token", {
+      // Check if user has refresh token in cookie
+      const response = await fetch("/api/v1/auth/refresh", {
         method: "POST",
       });
-      if (response.ok) {
-        const data = await response.json();
-        return data.accessToken;
-      } else {
-        return null;
+      if (!response.ok) {
+        throw new Error("Failed to get access token");
       }
+      const data = await response.json();
+      const { accessToken, user } = data;
+      // Get user info through access token and api
+      const userResponse = await fetch(`/api/v1/users/${user.id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!userResponse.ok) {
+        throw new Error("Failed to get user info");
+      }
+      const userData = await userResponse.json();
+      dispatch(
+        loginSuccess({
+          ...userData.data,
+          accessToken,
+        })
+      );
     } catch (error) {
-      return null;
+      console.log(error);
+      dispatch(loginFailure());
     }
   },
 };
-
-export default userService;
+export default userHelpers;

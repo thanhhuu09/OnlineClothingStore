@@ -1,21 +1,17 @@
 "use client";
-import {
-  addToCart,
-  toggleCart,
-  deleteFromCart,
-} from "@/redux/features/cartSlice";
+import { toggleCart, deleteFromCart } from "@/redux/features/cartSlice";
 import { AppDispatch, useAppSelector } from "@/redux/store";
 import { X, ShoppingBag } from "@phosphor-icons/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
 
-export default function Cart() {
+function CartButton() {
   const dispatch = useDispatch<AppDispatch>();
   const { showCart, cartItems, totalPrice } = useAppSelector(
     (state) => state.cart
   );
-
+  const { totalQuantities } = useAppSelector((state) => state.cart);
   const handleToggleCart = () => {
     dispatch(toggleCart());
   };
@@ -23,7 +19,17 @@ export default function Cart() {
     dispatch(deleteFromCart(id));
   };
   return (
-    <>
+    <div>
+      <button
+        className="relative flex justify-center"
+        onClick={handleToggleCart}
+      >
+        <ShoppingBag size={24} color="black" />
+        <p className="absolute bottom-3 left-3 bg-secondary-600 text-pr rounded-full p-3 text-xs text-secondary-50 w-5 h-5 flex justify-center items-center">
+          {totalQuantities > 10 ? "10+" : totalQuantities}
+        </p>
+      </button>
+
       {showCart && (
         <div
           className="fixed inset-0 bg-black opacity-40 z-20"
@@ -121,6 +127,7 @@ export default function Cart() {
           )}
         </div>
       </aside>
-    </>
+    </div>
   );
 }
+export default CartButton;

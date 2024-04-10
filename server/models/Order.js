@@ -48,7 +48,7 @@ const orderSchema = new mongoose.Schema(
     },
     paymentMethod: {
       type: String,
-      enum: ["Cash on Delivery", "VNPay"],
+      enum: ["COD", "VNPay"],
       required: true,
     },
     paymentStatus: {

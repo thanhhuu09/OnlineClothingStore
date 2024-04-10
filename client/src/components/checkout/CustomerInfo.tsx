@@ -1,21 +1,11 @@
 import { useEffect, useState } from "react";
 import FormInput from "../FormInput";
 import FormSelect from "../FormSelect";
-import { IDistrict, IProvince } from "@/interfaces/cityInterface";
-import CityService from "@/services/CityService";
-interface IFormCustomerInfo {
-  name: string;
-  phone: string;
-  email: string;
-  address: string;
-  note: string;
-  [key: string]: string; // Allow any other properties
-}
-interface IErrors extends IFormCustomerInfo {
-  [key: string]: string; // Allow any other properties
-}
-interface CustomerInfoProps {
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+import cityService from "@/helpers/cityService";
+
+interface customerInfoProps {
+  userInfo: any;
+  setUserInfo: (userInfo: any) => void;
 }
 const inputs = [
   {
@@ -50,44 +40,41 @@ const inputs = [
   },
 ];
 
-export default function CustomerInfo({ onSubmit }: CustomerInfoProps) {
-  // Define state variables for provinces, districts, and selected province and district
-  const [provinces, setProvinces] = useState<IProvince[]>([]);
-  const [districts, setDistricts] = useState<IDistrict[]>([]);
-  const [selectedProvince, setSelectedProvince] = useState<
-    IProvince | undefined
-  >(undefined);
-  const [selectedDistrict, setSelectedDistrict] = useState<
-    IDistrict | undefined
-  >(undefined);
-  // Fetch provinces and districts
+export default function CustomerInfo({
+  userInfo,
+  setUserInfo,
+}: customerInfoProps) {
+  const [cities, setCities] = useState<any>([]);
+  const [districts, setDistricts] = useState<any>([]);
+  const [selectedCity, setSelectedCity] = useState<any>("");
+  const [selectedDistrict, setSelectedDistrict] = useState<any>("");
+  // Fetch data
   useEffect(() => {
     const fetchCityData = async () => {
-      const provinces = await CityService.fetchProvinces();
-      setProvinces(provinces);
-
-      if (selectedProvince) {
-        const districts = await CityService.fetchDistricts(
-          selectedProvince.code
-        );
-        setDistricts(districts);
-      }
+      const cities = await cityService.getAllCities();
+      setCities(cities);
+    };
+    const fetchDistrictData = async () => {
+      const districts = await cityService.getCitiesByProvince(
+        selectedCity.province_id
+      );
+      setDistricts(districts);
     };
     fetchCityData();
-  }, [selectedProvince]);
+    fetchDistrictData();
+    console.log(districts);
+  }, [selectedCity]);
 
   // Handle province change
   const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedProvince = provinces.find(
-      (province) => province.name === e.target.value
+    const selectedCity = cities.find(
+      (city: any) => city.province_name === e.target.value
     );
-    setSelectedProvince(selectedProvince);
+    setSelectedCity(selectedCity);
   };
-
-  // Handle district change
   const handleDistrictChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedDistrict = districts.find(
-      (district) => district.name === e.target.value
+      (district: any) => district.district_name === e.target.value
     );
     setSelectedDistrict(selectedDistrict);
   };
@@ -101,20 +88,18 @@ export default function CustomerInfo({ onSubmit }: CustomerInfoProps) {
           errorMessages=""
           id={input.name}
           name={input.name}
-          onChange={() => {}}
           placeholder={input.placeholder}
           type={input.type}
-          value="" // form.name, form.phone, form.email, form.address, form.note
         />
       ))}
       <FormSelect
         id="province"
         name="province"
-        value={selectedProvince?.name || "Tỉnh/Thành phố"}
+        value={selectedCity.province_name || "Tỉnh/Thành phố"}
         onChange={handleProvinceChange}
-        options={provinces.map((province: IProvince) => ({
-          value: province.name,
-          label: province.name,
+        options={cities.map((city: any) => ({
+          value: city.province_name,
+          label: city.province_name,
         }))}
         placeholder="Tỉnh/Thành phố"
         errorMessages=""
@@ -122,14 +107,14 @@ export default function CustomerInfo({ onSubmit }: CustomerInfoProps) {
       <FormSelect
         id="district"
         name="district"
+        value={selectedDistrict?.district_name || "Quận/Huyện"}
         onChange={handleDistrictChange}
-        options={districts.map((district: IDistrict) => ({
-          value: district.name,
-          label: district.name,
+        options={districts.map((district: any) => ({
+          value: district.district_name,
+          label: district.district_name,
         }))}
         placeholder="Quận/Huyện"
         errorMessages=""
-        value={selectedDistrict?.name || "Quận/Huyện"}
       />
     </div>
   );

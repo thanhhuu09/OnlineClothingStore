@@ -16,34 +16,47 @@ const productSchema = new mongoose.Schema({
     type: Number,
     required: [true, "Please enter a price"],
   },
-  colors: {
-    type: [String],
-    required: [true, "Please enter a color"],
+  category: {
+    type: String,
   },
-  imagesURL: {
+  images: {
     type: [String],
     required: [true, "Please enter an image"],
-    trim: true,
   },
-  rating: {
-    type: Number,
+  ratings: {
+    type: [
+      {
+        userId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        rating: {
+          type: Number,
+        },
+        review: {
+          type: String,
+        },
+      },
+    ],
+    default: [],
   },
-  inventory: {
-    type: Number,
-    required: [true, "Please enter an inventory"],
-  },
-  size: {
-    type: [String],
-    required: [true, "Please enter a size"],
-  },
-  isFeatured: {
-    type: Boolean,
-    default: false,
-  },
-  category: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Category",
-    required: [true, "Please enter a category"],
+  variants: {
+    type: [
+      {
+        size: {
+          type: String,
+        },
+        color: {
+          type: String,
+        },
+        sku: {
+          type: String,
+        },
+        availableQuantity: {
+          type: Number,
+        },
+      },
+    ],
   },
 });
 

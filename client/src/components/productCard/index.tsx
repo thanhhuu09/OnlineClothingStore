@@ -19,7 +19,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const addToCartHandler = () => {
     // Check if user is logged in, if not, redirect to login page
     if (!currentUser) {
-      router.push("/auth/login");
+      router.push("auth/login");
       return;
     }
     dispatch(addToCart(product));

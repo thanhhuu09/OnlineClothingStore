@@ -1,10 +1,10 @@
 "use client";
 import { IProduct } from "@/interfaces/productInterface";
-import ProductCard from "./ProductCard";
+import ProductCard from "../productCard";
 import { getProducts } from "@/api/products";
 import Slider from "react-slick";
 import { useEffect, useState } from "react";
-import ProductCardSkeleton from "./ProductCardSkeleton";
+import ProductCardSkeleton from "../productCardSkeleton/ProductCardSkeleton";
 // Featured Products Component
 
 export default function FeaturedProducts() {

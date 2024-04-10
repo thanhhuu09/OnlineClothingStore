@@ -7,6 +7,7 @@ const {
   getUserById,
   updateUser,
 } = require("../controllers/userController");
+const authController = require("../controllers/authController");
 
 // Get all users (admin only)
 router.get("/", authenticationMiddleware.verifyTokenAndAdminAuth, getAllUsers);

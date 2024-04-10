@@ -1,5 +1,6 @@
-import Header from "@/components/Header";
-import FeaturedProducts from "@/components/FeaturedProducts";
+import FeaturedProducts from "@/components/featuredProducts";
+import Header from "@/components/header";
+
 export default function Home() {
   return (
     <>

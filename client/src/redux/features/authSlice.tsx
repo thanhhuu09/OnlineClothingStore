@@ -1,93 +1,83 @@
-// Auth Slice
-import { createSlice } from "@reduxjs/toolkit";
-
-export interface ICurrentUser {
-  userInfo: {
-    _id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    role: string;
-    isVerified: boolean;
-    avatar: string;
-    createdAt: string;
-    updatedAt: string;
-  };
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+interface IUserState {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
   accessToken: string;
 }
-interface IAuthState {
-  login: {
-    currentUser: ICurrentUser | null;
-    isFetching: boolean;
-    error: boolean;
-  };
-  register: {
-    isFetching: boolean;
-    error: boolean;
-  };
-  logout: {
-    isFetching: boolean;
-    error: boolean;
-  };
+interface IRequestState {
+  isFetching: boolean;
+  error: boolean;
 }
+interface IAuthState {
+  login: IRequestState & { currentUser: IUserState | null };
+  register: IRequestState;
+  logout: IRequestState;
+}
+
+const initialRequestState: IRequestState = {
+  isFetching: false,
+  error: false,
+};
+
 const initialState: IAuthState = {
   login: {
+    ...initialRequestState,
     currentUser: null,
-    isFetching: false,
-    error: false,
   },
-  register: {
-    isFetching: false,
-    error: false,
-  },
-  logout: {
-    isFetching: false,
-    error: false,
-  },
+  register: initialRequestState,
+  logout: initialRequestState,
 };
+const startRequest = (state: IRequestState) => {
+  state.isFetching = true;
+  state.error = false;
+};
+const requestSuccess = (state: IRequestState) => {
+  state.isFetching = false;
+  state.error = false;
+};
+const requestFailure = (state: IRequestState) => {
+  state.isFetching = false;
+  state.error = true;
+};
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    // Login
+    // LOGIN
     loginRequest: (state) => {
-      state.login.isFetching = true;
-      state.login.error = false;
+      startRequest(state.login);
     },
-    loginSuccess: (state, action) => {
-      state.login.isFetching = false;
+    loginSuccess: (state, action: PayloadAction<IUserState>) => {
+      requestSuccess(state.login);
       state.login.currentUser = action.payload;
     },
     loginFailure: (state) => {
-      state.login.isFetching = false;
-      state.login.error = true;
+      requestFailure(state.login);
     },
-    // Register
+    // REGISTER
     registerRequest: (state) => {
-      state.register.isFetching = true;
-      state.register.error = false;
+      startRequest(state.register);
     },
     registerSuccess: (state) => {
-      state.register.isFetching = false;
-      state.register.error = false;
+      requestSuccess(state.register);
     },
     registerFailure: (state) => {
-      state.register.isFetching = false;
-      state.register.error = true;
+      requestFailure(state.register);
     },
-    // Logout
+    // LOGOUT
     logoutRequest: (state) => {
-      state.logout.isFetching = true;
-      state.logout.error = false;
+      startRequest(state.logout);
     },
     logoutSuccess: (state) => {
-      state.logout.isFetching = false;
-      state.logout.error = false;
+      requestSuccess(state.logout);
       state.login.currentUser = null;
     },
     logoutFailure: (state) => {
-      state.logout.isFetching = false;
-      state.logout.error = true;
+      requestFailure(state.logout);
     },
   },
 });

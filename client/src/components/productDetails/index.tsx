@@ -78,7 +78,7 @@ function ProductDetails() {
   // Event handler
   const handleSizeChange = (size: string) => {
     setSelectedSize(size);
-    // Nếu màu đã chọn không có sẵn trong size mới chọn thì reset màu
+    // Check if selected color is available in selected size
     if (!getColorAvailability(size).includes(selectedColor)) {
       setSelectedColor("");
     }

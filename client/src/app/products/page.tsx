@@ -3,7 +3,7 @@
 import { IProduct } from "@/interfaces/productInterface";
 import { getProducts } from "@/api/products";
 import ProductCard from "@/components/productCard";
-import Sidebar from "@/components/product-filter/Sidebar";
+import Sidebar from "@/components/productFilter/Sidebar";
 import { useEffect, useState } from "react";
 
 export default function Page() {

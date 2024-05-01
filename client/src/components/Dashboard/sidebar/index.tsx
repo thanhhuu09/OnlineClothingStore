@@ -1,6 +1,6 @@
 // Sidebar for dashboard
 import Image from "next/image";
-import MenuLink from "./MenuLink/MenuLink";
+import MenuLink from "./MenuLink";
 import {
   CurrencyCircleDollar,
   ShoppingBagOpen,
@@ -62,20 +62,20 @@ const menuItems = [
 ];
 export default function Sidebar() {
   return (
-    <div className="sticky top-0 right-0 dark:bg-slate-800 p-4">
+    <div className="sticky top-0 right-0 p-4 bg-white shadow-md h-screen w-72">
       {/* Avatar Section*/}
       <div className="flex items-center ">
         <Image
           className="rounded-full"
-          src="/images/avatar.jpg"
+          src="/images/banner_header.png"
           width={50}
           height={50}
           alt="avatar"
         />
         {/* Position and name section */}
         <div className="ml-2">
-          <h1 className="text-white">Tommy Thach</h1>
-          <p className="text-slate-400 text-sm">Quản trị viên</p>
+          <h1 className="font-medium">Tommy Thach</h1>
+          <p className="text-sm">Quản trị viên</p>
         </div>
       </div>
       {/* Menu Section */}
@@ -83,7 +83,7 @@ export default function Sidebar() {
         {menuItems.map((cat) => (
           <li key={cat.title} className="my-4">
             {/* Category title */}
-            <span className="text-slate-400 font-semibold">{cat.title}</span>
+            <span className="text-primary-600 font-semibold">{cat.title}</span>
             {/*  Get list of menu items */}
             {cat.list.map((item) => (
               <MenuLink

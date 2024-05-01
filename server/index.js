@@ -31,7 +31,7 @@ const userRoutes = require("./routes/user");
 const cartRoutes = require("./routes/cart");
 const voucherRoutes = require("./routes/voucher");
 const orderRoutes = require("./routes/order");
-
+const uploadImageRoutes = require("./routes/image");
 // Use routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/products", productRoutes);
@@ -40,6 +40,7 @@ app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/carts", cartRoutes);
 app.use("/api/v1/vouchers", voucherRoutes);
 app.use("/api/v1/orders", orderRoutes);
+app.use("/api/v1/upload-image", uploadImageRoutes);
 
 // Payment Routes
 app.use("/api/v1/payment", require("./paymentGateway/paymentRoutes"));

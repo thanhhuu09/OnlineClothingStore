@@ -1,6 +1,6 @@
 // Sidebar component
 "use client";
-import PriceRange from "@/components/product-filter/PriceRange";
+import PriceRange from "./PriceRange";
 import { useState } from "react";
 
 interface SidebarProps {

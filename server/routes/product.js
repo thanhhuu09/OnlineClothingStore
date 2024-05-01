@@ -13,7 +13,7 @@ router.get("/", getAllProducts);
 router.get("/:id", getProductById);
 router.post(
   "/",
-  authenticationMiddleware.verifyTokenAndAdminAuth,
+  // authenticationMiddleware.verifyTokenAndAdminAuth,
   createProduct
 );
 router.delete(

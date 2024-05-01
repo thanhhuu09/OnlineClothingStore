@@ -1,5 +1,5 @@
-import Card from "@/components/Dashboard/Card/Card";
-import Transactions from "@/components/Dashboard/Transactions/Transactions";
+import Card from "@/components/dashboard/card/Card";
+import Transactions from "@/components/dashboard/Transactions/Transactions";
 // Dummy data
 const cards = [
   {

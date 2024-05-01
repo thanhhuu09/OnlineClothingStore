@@ -23,6 +23,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = event.currentTarget;
+    console.log(files);
     if (files) {
       if (
         files.length > MAX_IMAGES ||
@@ -52,7 +53,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
         Hình ảnh
       </label>
       {/* Image user choose */}
-      <div>
+      <div className="flex flex-wrap">
         {selectedImages.map((image: any) => (
           <div key={image} className="p-2 border m-1 relative group">
             {/* Image */}
@@ -66,10 +67,10 @@ const ImageInput: React.FC<ImageInputProps> = ({
             </div>
             {/* Remove button, view image in full screen */}
             <div className="absolute w-full top-0 right-0 p-1 bg-black opacity-70 group-hover:flex justify-between hidden">
-              <button onClick={() => removeImage(image)}>
+              <button type="button" onClick={() => removeImage(image)}>
                 <X size={16} color="white" />
               </button>
-              <button onClick={() => handleViewImage(image)}>
+              <button type="button" onClick={() => handleViewImage(image)}>
                 <Eye size={16} color="white" />
               </button>
             </div>

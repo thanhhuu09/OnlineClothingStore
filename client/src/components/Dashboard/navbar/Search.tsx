@@ -4,7 +4,7 @@ export default function Search() {
   return (
     <form>
       <label
-        className="bg-slate-700 w-fit flex items-center p-2 rounded-md gap-2"
+        className="w-fit flex items-center p-2 rounded-md gap-2 bg-slate-100"
         htmlFor="search"
       >
         <MagnifyingGlass size={20} />
@@ -13,7 +13,7 @@ export default function Search() {
           type="text"
           autoComplete="off"
           placeholder="Search"
-          className="bg-slate-700 border-none focus:outline-none"
+          className="border-none focus:outline-none bg-slate-100"
         />
       </label>
     </form>

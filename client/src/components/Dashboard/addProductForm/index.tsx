@@ -17,38 +17,22 @@
 //       }
 //     ],
 //     "variants": [
-//       {
-//         "size": "M",
-//         "color": "Blue",
-//         "sku": "SP1",
-//         "availableQuantity": 10
-//       },
-//       {
-//         "size": "L",
-//         "color": "Red",
-//         "sku": "SP2",
-//         "availableQuantity": 5
-//       }
-//     ]
-//   }
+//      {
+//        color: "Trắng",
+//        sizes: [
+//          { size: "Small", price: 0, stock: 0, SKU: 0 },
+//          { size: "Big", price: 0, stock: 0, SKU: 0 },
+//        ],
+//      },
+//      {
+//        color: "Đen",
+//        sizes: [
+//          { size: "Small", price: 0, stock: 0, SKU: 0 },
+//          { size: "Big", price: 0, stock: 0, SKU: 0 },
+//        ],
+//      },
+//    ]
 
-// dummy data
-// const variations = [
-//   {
-//     color: "Trắng",
-//     sizes: [
-//       { size: "Small", price: 0, stock: 0, SKU: 0 },
-//       { size: "Big", price: 0, stock: 0, SKU: 0 },
-//     ],
-//   },
-//   {
-//     color: "Đen",
-//     sizes: [
-//       { size: "Small", price: 0, stock: 0, SKU: 0 },
-//       { size: "Big", price: 0, stock: 0, SKU: 0 },
-//     ],
-//   },
-// ];
 "use client";
 import { Form, Formik, useFormikContext } from "formik";
 import { useState } from "react";
@@ -56,9 +40,14 @@ import * as yup from "yup";
 import FormInput from "./FormInput";
 import ImageInput from "./ImageInput";
 import VariationList from "./VariationList";
+import productHelpers from "@/helpers/productHelpers";
+import { useAppSelector } from "@/redux/store";
 
 export default function AddProductForm() {
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const accessToken = useAppSelector(
+    (state) => state.auth.login.currentUser?.accessToken
+  );
   const initialValues = {
     name: "",
     description: "",
@@ -69,13 +58,28 @@ export default function AddProductForm() {
     variations: [],
   };
 
-  const handleSubmit = (values: any, { setSubmitting }: any) => {
+  const handleSubmit = async (values: any, { setSubmitting }: any) => {
+    setSubmitting(true);
+    // Call API to add product
+    const productData: any = {
+      name: values.name,
+      description: values.description,
+      category: values.category,
+      images: selectedImages,
+      variants: values.variations,
+    };
+    await productHelpers.addProduct(productData, accessToken as string);
     setSubmitting(false);
-    console.log(values);
   };
 
   const validationSchema = yup.object().shape({
     name: yup.string().required("Tên sản phẩm không được để trống"),
+    description: yup.string().required("Mô tả không được để trống"),
+    category: yup.string().required("Ngành hàng không được để trống"),
+    colors: yup.string().required("Màu sắc không được để trống"),
+    sizes: yup.string().required("Kích thước không được để trống"),
+    price: yup.number().required("Giá bán không được để trống"),
+    stock: yup.number().required("Hàng trong kho không được để trống"),
   });
 
   return (
@@ -89,14 +93,10 @@ export default function AddProductForm() {
         validationSchema={validationSchema}
       >
         {({ isSubmitting }) => (
-          <Form>
+          <Form className="grid grid-cols-2 gap-4">
             <FormInput type="text" name="name" label="Tên sản phẩm" />
             <FormInput type="text" name="description" label="Mô tả" />
             <FormInput type="text" name="category" label="Ngành hàng" />
-            <ImageInput
-              selectedImages={selectedImages}
-              setSelectedImages={setSelectedImages}
-            />
             <FormInput
               type="text"
               name="colors"
@@ -109,14 +109,41 @@ export default function AddProductForm() {
               label="Kích thước"
               placeholder="X, XL"
             />
-
-            <VariationList />
-            <button
-              type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded"
-            >
-              Thêm sản phẩm
-            </button>
+            <FormInput
+              type="text"
+              name="price"
+              label="Giá bán"
+              note="Giá này áp dụng cho tất cả biến thể. Có thể chỉnh sửa sau khi thêm"
+            />
+            <FormInput
+              type="text"
+              name="stock"
+              label="Hàng trong kho"
+              note="Số lượng này áp dụng cho tất cả biến thể. Có thể chỉnh sửa sau khi thêm"
+            />
+            <ImageInput
+              selectedImages={selectedImages}
+              setSelectedImages={setSelectedImages}
+            />
+            <div className="col-span-2">
+              <VariationList />
+            </div>
+            <div className="col-span-2 flex justify-end">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded"
+              >
+                Thêm sản phẩm
+              </button>
+              {/* Reset button */}
+              <button
+                type="reset"
+                className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-2 rounded ml-2"
+              >
+                Xóa
+              </button>
+            </div>
           </Form>
         )}
       </Formik>

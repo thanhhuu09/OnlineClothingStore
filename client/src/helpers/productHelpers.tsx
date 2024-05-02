@@ -6,7 +6,7 @@ interface ProductData {
   price: number;
   stock: number;
   category: string;
-  images: string[];
+  productImages: File[];
   variants: [
     {
       color: string;
@@ -22,21 +22,51 @@ interface ProductData {
   ];
 }
 
+const uploadImages = async (productImages: File[], accessToken: string) => {
+  const formData = new FormData();
+  productImages.forEach((image) => {
+    formData.append("productImages", image);
+  });
+  const response = await fetch("/api/v1/upload-image", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: formData,
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to upload images: ${response.status}`);
+  }
+  const imageUrls = await response.json();
+  return imageUrls.images;
+};
+
 const productHelpers = {
   addProduct: async (productData: ProductData, accessToken: string) => {
+    const { productImages } = productData;
     try {
-      const response = await fetch("/api/v1/products", {
+      const imageUrls = await uploadImages(productImages, accessToken);
+      // add imageUrls to productData
+      const productDataWithImageUrls = {
+        ...productData,
+        productImages: imageUrls,
+      };
+      console.log(productDataWithImageUrls);
+
+      // call api to add product /api/v1/products
+      const responseAddProduct = await fetch("/api/v1/products", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(productData),
+        body: JSON.stringify(productDataWithImageUrls),
       });
-      if (!response.ok) {
-        throw new Error(`Failed to add product: ${response.status}`);
+      if (!responseAddProduct.ok) {
+        throw new Error(`Failed to add product: ${responseAddProduct.status}`);
       }
-      const addedProductData = await response.json();
+
+      const addedProductData = await responseAddProduct.json();
       toast.success("Thêm sản phẩm thành công!", {
         position: "bottom-right",
       });

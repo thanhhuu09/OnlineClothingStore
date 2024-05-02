@@ -6,7 +6,7 @@ import { Modal } from "@mui/material";
 
 interface ImageInputProps {
   selectedImages: string[];
-  setSelectedImages: (images: string[]) => void;
+  setSelectedImages: (productImages: string[]) => void;
 }
 
 const ImageInput: React.FC<ImageInputProps> = ({
@@ -16,14 +16,16 @@ const ImageInput: React.FC<ImageInputProps> = ({
   const MAX_IMAGES = 6;
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [imageSelecting, setImageSelecting] = useState<string>("");
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue, values } = useFormikContext<any>();
 
   const createImageURLs = (files: FileList) =>
     Array.from(files).map((file) => URL.createObjectURL(file));
 
+  // Handle when user choose image
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // Get the files that user choose
     const { files } = event.currentTarget;
-    console.log(files);
+
     if (files) {
       if (
         files.length > MAX_IMAGES ||
@@ -33,14 +35,19 @@ const ImageInput: React.FC<ImageInputProps> = ({
       } else {
         const newImages = createImageURLs(files);
         setSelectedImages([...selectedImages, ...newImages]); // this help show the image that user choose
-        setFieldValue("images", [...selectedImages, ...newImages]); // this help to submit the image to the server
+        setFieldValue("productImages", [...values.productImages, ...files]); // this help to send the image to the server
       }
     }
   };
 
-  const removeImage = (image: any) => {
-    const newImages = selectedImages.filter((i) => i !== image); //index is the index of the image that we want to remove
+  const removeImage = (imageSrc: string, file: File) => {
+    // remove the image show in the screen
+    const newImages = selectedImages.filter((image) => image !== imageSrc); //index is the index of the image that we want to remove
     setSelectedImages(newImages);
+
+    // remove the image in the formik values
+    const newFiles = values.productImages.filter((f: File) => f !== file);
+    setFieldValue("productImages", newFiles);
   };
   const handleViewImage = (image: any) => {
     setIsModalOpen(true);
@@ -49,7 +56,10 @@ const ImageInput: React.FC<ImageInputProps> = ({
 
   return (
     <div>
-      <label htmlFor="images" className="text-sm font-medium text-gray-700">
+      <label
+        htmlFor="productImages"
+        className="text-sm font-medium text-gray-700"
+      >
         Hình ảnh
       </label>
       {/* Image user choose */}
@@ -67,7 +77,15 @@ const ImageInput: React.FC<ImageInputProps> = ({
             </div>
             {/* Remove button, view image in full screen */}
             <div className="absolute w-full top-0 right-0 p-1 bg-black opacity-70 group-hover:flex justify-between hidden">
-              <button type="button" onClick={() => removeImage(image)}>
+              <button
+                type="button"
+                onClick={() =>
+                  removeImage(
+                    image,
+                    values.productImages[selectedImages.indexOf(image as any)] // get the file that user choose
+                  )
+                }
+              >
                 <X size={16} color="white" />
               </button>
               <button type="button" onClick={() => handleViewImage(image)}>
@@ -89,7 +107,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
         </div>
       </Modal>
       <label
-        htmlFor="images"
+        htmlFor="productImages"
         className="cursor-pointer flex flex-col items-center bg-indigo-100 text-indigo-600 px-4 py-2 rounded-md"
       >
         <ImagesSquare size={26} />
@@ -98,14 +116,14 @@ const ImageInput: React.FC<ImageInputProps> = ({
       <Field
         value={undefined}
         type="file"
-        id="images"
-        name="images"
+        id="productImages"
+        name="productImages"
         multiple
         hidden
         onChange={handleImageChange}
       />
       <ErrorMessage
-        name="images"
+        name="productImages"
         component="span"
         className="text-red-500 text-xs italic"
       />

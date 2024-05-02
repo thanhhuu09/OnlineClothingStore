@@ -8,12 +8,10 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
   secure: true,
 });
-console.log(cloudinary.config());
 
 // Upload image to Cloudinary
 const uploadImagesToCloudinary = async (imagePaths, folderName) => {
   try {
-    console.log(imagePaths);
     const uploadPromises = imagePaths.map((imagePath) =>
       cloudinary.uploader.upload(imagePath, {
         folder: folderName,

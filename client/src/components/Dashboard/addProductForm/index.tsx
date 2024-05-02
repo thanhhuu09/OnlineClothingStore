@@ -3,7 +3,7 @@
 //     "description": "This is a sample product",
 //     "price": 99.99,
 //     "category": "Electronics",
-//     "images": ["image1.jpg", "image2.jpg"],
+//     "productImages": ["image1.jpg", "image2.jpg"],
 //     "ratings": [
 //       {
 //         "userId": "60d6c47e4094a45b0468d7a6",
@@ -52,10 +52,12 @@ export default function AddProductForm() {
     name: "",
     description: "",
     category: "",
-    images: [],
+    productImages: [],
     colors: "",
     sizes: "",
     variations: [],
+    price: "",
+    stock: "",
   };
 
   const handleSubmit = async (values: any, { setSubmitting }: any) => {
@@ -65,9 +67,10 @@ export default function AddProductForm() {
       name: values.name,
       description: values.description,
       category: values.category,
-      images: selectedImages,
+      productImages: values.productImages,
       variants: values.variations,
     };
+
     await productHelpers.addProduct(productData, accessToken as string);
     setSubmitting(false);
   };
@@ -84,7 +87,7 @@ export default function AddProductForm() {
 
   return (
     <div>
-      {/* Thông tin cơ bản: name (tên sản phẩm), desc (mô tả), price (giá bán), category (ngành hàng), images (hình ảnh) */}
+      {/* Thông tin cơ bản: name (tên sản phẩm), desc (mô tả), price (giá bán), category (ngành hàng), productImages (hình ảnh) */}
       <Formik
         initialValues={initialValues}
         onSubmit={(values, { setSubmitting }) => {

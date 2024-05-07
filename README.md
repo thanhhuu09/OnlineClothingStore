@@ -29,8 +29,7 @@ To install OnlineClothingStore, follow these steps:
 1. Clone the repository: `git clone https://github.com/thanhhuu09/E-commerce-store.git`
 2. Navigate into the project directory: `cd OnlineClothingStore`
 3. Switch to the `restructure-project` branch: `git checkout restructure-project`
-4. Install the dependencies: `npm install`
-5. Navigate into the client and server directories and install their respective dependencies: `cd client && npm install` and `cd server && npm install`
+4. Navigate into the client and server directories and install their respective dependencies: `cd client && npm install` and `cd server && npm install`
 
 ## Using OnlineClothingStore
 

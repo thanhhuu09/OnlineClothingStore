@@ -1,24 +1,10 @@
 import { Field, useFormikContext } from "formik";
 import React, { useEffect, useState } from "react";
-
-// dummy data
-// const variations = [
-//   {
-//     color: "Trắng",
-//     sizes: [
-//       { size: "Small", price: 0, stock: 0, SKU: 0 },
-//       { size: "Big", price: 0, stock: 0, SKU: 0 },
-//     ],
-//   },
-//   {
-//     color: "Đen",
-//     sizes: [
-//       { size: "Small", price: 0, stock: 0, SKU: 0 },
-//       { size: "Big", price: 0, stock: 0, SKU: 0 },
-//     ],
-//   },
-// ];
-const VariationList: React.FC = () => {
+interface VariationListProps {
+  colors: string[];
+  sizes: string[];
+}
+const VariationList: React.FC<VariationListProps> = ({ colors, sizes }) => {
   const { values, handleChange } = useFormikContext<any>();
   const [showVariationList, setShowVariationList] = useState<boolean>(false);
 

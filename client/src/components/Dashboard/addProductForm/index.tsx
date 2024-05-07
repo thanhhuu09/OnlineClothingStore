@@ -1,38 +1,3 @@
-// {
-//     "name": "Sample Product",
-//     "description": "This is a sample product",
-//     "price": 99.99,
-//     "category": "Electronics",
-//     "productImages": ["image1.jpg", "image2.jpg"],
-//     "ratings": [
-//       {
-//         "userId": "60d6c47e4094a45b0468d7a6",
-//         "rating": 5,
-//         "review": "Great product!"
-//       },
-//       {
-//         "userId": "60d6c47e4094a45b0468d7b7",
-//         "rating": 4,
-//         "review": "Good product"
-//       }
-//     ],
-//     "variants": [
-//      {
-//        color: "Trắng",
-//        sizes: [
-//          { size: "Small", price: 0, stock: 0, SKU: 0 },
-//          { size: "Big", price: 0, stock: 0, SKU: 0 },
-//        ],
-//      },
-//      {
-//        color: "Đen",
-//        sizes: [
-//          { size: "Small", price: 0, stock: 0, SKU: 0 },
-//          { size: "Big", price: 0, stock: 0, SKU: 0 },
-//        ],
-//      },
-//    ]
-
 "use client";
 import { Form, Formik, useFormikContext } from "formik";
 import { useState } from "react";

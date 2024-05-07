@@ -1,5 +1,5 @@
 // File này call api để login, register, logout
-import { IUserLogin, IUserRegister } from "@/interfaces/userInterface";
+import { IUserLogin, IUserRegister } from "@/interfaces/models/User";
 import {
   loginFailure,
   loginRequest,

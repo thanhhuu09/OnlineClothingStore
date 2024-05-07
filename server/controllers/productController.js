@@ -6,9 +6,24 @@ const productController = {
   getAllProducts: async (req, res) => {
     try {
       const products = await Product.find();
-      res
-        .status(200)
-        .json({ msg: "Products fetched successfully", data: products });
+      // Pagination
+      const page = parseInt(req.query.page) || 1; // Default page 1 if not provided
+      const limit = parseInt(req.query.limit) || 10; // Default limit 10 if not provided
+      // Calculate total pages
+      const totalProducts = products.length;
+      const totalPages = Math.ceil(totalProducts / limit);
+      // Calculate start and end index to slice products array
+      const startIndex = (page - 1) * limit;
+      const endIndex = page * limit;
+      // Slice products array to return products for the requested page
+      const productPage = products.slice(startIndex, endIndex);
+      // Pagination result
+      const pagination = { page, totalPages, totalProducts, limit };
+      res.status(200).json({
+        msg: "Products fetched successfully",
+        data: productPage,
+        pagination,
+      });
     } catch (error) {
       console.error("Error fetching products:", error);
       res.status(500).json({ msg: "Error fetching products" });

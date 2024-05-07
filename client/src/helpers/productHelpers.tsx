@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 
-interface ProductData {
+export interface ProductData {
+  _id?: string;
   name: string;
   description: string;
   price: number;
@@ -92,6 +93,23 @@ const productHelpers = {
       return productsData;
     } catch (error) {
       console.error("Failed to get products", error);
+    }
+  },
+  getProductById: async (productId: string, accessToken: string) => {
+    try {
+      const response = await fetch(`/api/v1/products/${productId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to get product: ${response.status}`);
+      }
+      const productData = await response.json();
+
+      return productData.data;
+    } catch (error) {
+      console.error("Failed to get product", error);
     }
   },
 };

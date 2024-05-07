@@ -17,6 +17,7 @@ interface OrderInfo {
   voucher: number;
   paymentMethod: string;
 }
+
 export default function Checkout() {
   const { cartItems } = useAppSelector((state: any) => state.cart);
   const [orderInfo, setOrderInfo] = useState<OrderInfo>({

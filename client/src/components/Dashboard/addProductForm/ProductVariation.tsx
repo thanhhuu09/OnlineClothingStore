@@ -1,8 +1,6 @@
 import { Field, ErrorMessage } from "formik";
 
-interface ProductVariationInputProps {}
-
-const ProductVariationInput: React.FC<ProductVariationInputProps> = () => {
+const ProductVariationInput: React.FC = () => {
   return (
     <div>
       <label htmlFor="colors">Màu sắc</label>

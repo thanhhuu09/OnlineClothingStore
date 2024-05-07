@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { ICartItem, ICartState } from "@/interfaces/cartInterface";
-import { IProduct } from "@/interfaces/productInterface";
+import { ICartItem, ICartState } from "@/interfaces/models/Cart";
+import { Product } from "@/interfaces/models/Product";
+// Define initial state
 const initialState: ICartState = {
   showCart: false,
   cartItems: [],
@@ -13,7 +14,7 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addToCart: (state, action: PayloadAction<IProduct>) => {
+    addToCart: (state, action: PayloadAction<any>) => {
       const newItem: ICartItem = {
         ...action.payload,
         quantity: 1,
